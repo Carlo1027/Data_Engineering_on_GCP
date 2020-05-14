@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta content='[]' name='active-experiments'>
+<meta content='{&quot;userId&quot;:2485272}' name='help-api-product-data'>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="Ew0J9sfiNDNG54uNcmX6iJfNQHvyRlR1wVc/I2vOPJlSkqHREKE4keEQTVYN+ehFJ7erg5ucul/1hdJbB0AEzA==" />
+<title>Recommend Products using ML with Cloud SQL and Dataproc | Qwiklabs</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0' name='viewport'>
+<meta content='In this lab you will build a housing rental recommendation model using Cloud SQL and Apache Spark ML jobs running on Cloud Dataproc.' name='description'>
+<meta content='Qwiklabs' name='author'>
+<meta content='1rRsY0INj8RvwB5EF5pwdxt2A2P9aDgAlsICaJ0d5w0' name='google-site-verification'>
+<meta content='Recommend Products using ML with Cloud SQL and Dataproc | Qwiklabs' property='og:title'>
+<meta content='website' property='og:type'>
+<meta content='/favicon-144.png' property='og:image'>
+<meta content='Qwiklabs' property='og:site_name'>
+<meta content='In this lab you will build a housing rental recommendation model using Cloud SQL and Apache Spark ML jobs running on Cloud Dataproc.' property='og:description'>
+<meta content='/qwiklabs_logo_900x887.png' property='og:logo' size='900x887'>
+<meta content='/qwiklabs_logo_994x187.png' property='og:logo' size='994x187'>
+<meta content='#3681E4' property='msapplication-TileColor'>
+<meta content='/favicon-144.png' property='msapplication-TileImage'>
+<link href='/favicon-32.png' rel='shortcut icon'>
+<link color='#3681E4' href='/favicon-svg.svg' rel='mask-icon'>
+<link href='/favicon-180.png' rel='apple-touch-icon-precomposed'>
+<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Oswald:400|Roboto+Mono:400,700|Roboto:300,400,500,700|Google+Sans:300,400,500,700|Google+Sans+Display:400|Material+Icons|Google+Material+Icons" />
+
+
+<!--[if lt IE 9]>
+<script src='http://html5shim.googlecode.com/svn/trunk/html5.js' type='text/javascript'></script>
+<![endif]-->
+<!--[endif]>  <![endif]-->
+<script>
+//<![CDATA[
+window.gon={};gon.current_user={"firstname":"Carlo","lastname":"Andr\u00e9 Castro Galindo","fullname":"Carlo Andr\u00e9 Castro Galindo","company":"Coursera","email":"carlocastrogalindo@gmail.com","origin":"googlecoursera-run, lti-coursera","subscriptions":0,"id":"eb3f0602d940d94d2eaeef36f2aa2e77","qlCreatedAt":"2020-02-28 17:36:48 UTC","optIn":null};gon.segment="j4Im8pqIko0Lxq4wVVZWMPMM0EroHUvb";gon.deployment="googlecoursera-run";
+//]]>
+</script>
+<script src='https://www.google.com/recaptcha/api.js?render=6LeVI8IUAAAAAJNdox5eTkYrw9SbvhZ1TFyv3iHr'></script>
+<script type='application/ld+json'>
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "url": "https://www.qwiklabs.com/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.qwiklabs.com/catalog?keywords={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script id='ze-snippet' src='https://static.zdassets.com/ekr/snippet.js?key=511e4158-0aec-4e3c-b2e6-4daa1769f51e'></script>
+
+
+
+<link rel="stylesheet" media="all" href="https://cdn.qwiklabs.com/assets/application-1d3ba52a62db672fc03b169a92ebabc516e99d601001c570886d447605450dcd.css" />
+<script>
+  EVENT_SOURCE_BASE_URL = "https://googlecoursera-run.qwiklabs.com/nchan-sub?id=";
+</script>
+<script src="https://cdn.qwiklabs.com/polyfills/webcomponents-loader.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/hallofmirrors/hallofmirrors-947c8bb5523067f5125e00faf0bb0cbe26f0b4face193cf62aaaff4f06749ab5.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.qwiklabs.com/assets/vendor-45d462772c30000424907184f70c7157e95fb6227698d1671c5051818a6f60d8.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/application-62dd18a5d24cafd385e8d522b9397c4c78c80e392576bae9fcd6e2f994fee522.js"></script>
+</head>
+<body class='focuses focuses-show lab-show l-full no-nav'>
+<div class='header-container'>
+<div class='header'>
+<a class='mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect header__button header__button--nav header__nav-panel-button js-nav-toggle'>
+<i class='material-icons'>menu</i>
+</a>
+<div class='header__title'>
+<a class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--nav" href="https://www.coursera.org/"><ql-icon>arrow_back</ql-icon></a>
+
+<h1 class='headline-5'>
+Recommend Products using ML with Cloud SQL and Dataproc
+</h1>
+</div>
+<div class='header__actions'>
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--action header__button--search js-header-search-bar-button'>
+<i class='material-icons'>search</i>
+</a>
+
+<ql-help context="lab" productdata="{&quot;userId&quot;:2485272}" data-analytics-action="opened_help" data-analytics-label="lab"></ql-help>
+<a class='header-my-account-button mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect js-my-account-button'>
+<img class="avatar " src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+</a>
+<div class='header-my-account-menu js-my-account-menu'>
+<div class='card elevation-2 no-padding'>
+<div class='my-account-menu__top'>
+<img class="avatar " src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+<div class='my-account-menu__info'>
+<h4 class='subtitle-headline-1'>
+Carlo André Castro Galindo
+</h4>
+<p class='body-2 text--gray'>
+<span>carlocastrogalindo@gmail.com</span>
+</p>
+<a class="button" href="/my_account/profile">My Account</a>
+</div>
+</div>
+<div class='my-account-menu__bottom'>
+<a class="text--green subtitle-headline-2" href="/my_account/credits">0 Credits
+</a><a data-analytics-action="clicked_sign_out" class="button button--hairline" rel="nofollow" data-method="delete" href="/users/sign_out">Sign Out</a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div class='header__search-bar js-header-search-bar'>
+<form id="catalog-search-mobile" onsubmit="ql.catalogSearchFilter(); return false;" action="/searches/elasticsearch" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="4kne0hT5JPRJZM1n3e9W4vwrf+cJMVDRQKfOLU/KYBGj1nb1w7ooVu6TC7yic0QvTFGUH2Drvvt0dSNVI0RYRA==" />
+<input type="text" name="keywords" id="keywords" placeholder="Search" maxlength="255" />
+</form>
+
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button'>
+<i class='material-icons'>close</i>
+</a>
+</div>
+</div>
+
+<nav class='nav-bar'>
+<a class="nav-bar__item js-navigation-button" href="/"><ql-icon class='nav-bar__item__icon'>
+home
+</ql-icon>
+<span class='nav-bar__item__label'>
+Home
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/catalog"><ql-icon class='nav-bar__item__icon'>
+school
+</ql-icon>
+<span class='nav-bar__item__label'>
+Catalog
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/my_learning"><ql-icon class='nav-bar__item__icon'>
+event_note
+</ql-icon>
+<span class='nav-bar__item__label'>
+My Learning
+</span>
+</a>
+</nav>
+
+<nav class='nav-panel js-nav-panel'>
+<div class='nav-panel__logo'>
+<div class='logo logo--blue'></div>
+</div>
+<a title="Home" tabindex="-1" class="nav-panel__item js-navigation-button" href="/"><ql-icon class='nav-panel__item__icon'>
+home
+</ql-icon>
+<div class='nav-panel__item__label'>
+Home
+</div>
+</a>
+<a title="Catalog" tabindex="-1" class="nav-panel__item js-navigation-button" href="/catalog"><ql-icon class='nav-panel__item__icon'>
+school
+</ql-icon>
+<div class='nav-panel__item__label'>
+Catalog
+</div>
+</a>
+<a title="My Learning" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_learning"><ql-icon class='nav-panel__item__icon'>
+event_note
+</ql-icon>
+<div class='nav-panel__item__label'>
+My Learning
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a title="Profile" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/profile"><ql-icon class='nav-panel__item__icon'>
+account_circle
+</ql-icon>
+<div class='nav-panel__item__label'>
+Profile
+</div>
+</a>
+<a title="Credits &amp; Subscriptions" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/credits"><ql-icon class='nav-panel__item__icon'>
+money
+</ql-icon>
+<div class='nav-panel__item__label'>
+Credits &amp; Subscriptions
+</div>
+</a>
+<a title="Security" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/security"><ql-icon class='nav-panel__item__icon'>
+security
+</ql-icon>
+<div class='nav-panel__item__label'>
+Security
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a class="nav-panel__item" tabindex="-1" href="#"><ql-help>
+<div class='nav-panel__help-item'>
+<ql-icon class='nav-panel__item__icon'>help</ql-icon>
+<div class='nav-panel__item__label'>Help</div>
+</div>
+</ql-help>
+</a><div class='nav-panel__small-links'>
+<a tabindex="-1" href="/privacy_policy">Privacy</a>
+<a tabindex="-1" href="/terms_of_service">Terms</a>
+</div>
+</nav>
+<div class='nav-panel__overlay js-nav-toggle'></div>
+
+<main class='js-main'>
+<span class='hidden' id='flash-sibling-before'></span>
+
+<div class='l-main-wrapper' id='main-wrapper'>
+
+
+
+
+
+
+
+<div class='js-lab-state' data-analytics-payload='{&quot;label&quot;:&quot;Recommend Products using ML with Cloud SQL and Dataproc&quot;,&quot;lab_name&quot;:&quot;Recommend Products using ML with Cloud SQL and Dataproc&quot;,&quot;classroom_name&quot;:null,&quot;deployment&quot;:&quot;googlecoursera-run&quot;}' data-focus-id='31818' data-lab-billing-limit='0.0' data-lab-duration='5400' data-parent='classroom'></div>
+<ql-lab-control-panel class='js-lab-control-panel l-lab-control-panel' connectionDetails='[]' connectionFiles='[]' labControlButton='{&quot;disabled&quot;:false,&quot;pending&quot;:false,&quot;running&quot;:false}' labTimer='{&quot;ticking&quot;:false,&quot;secondsRemaining&quot;:5400}' studentResources='[]'></ql-lab-control-panel>
+<div class='l-lab-main-body'>
+<div class='js-lab-content lab-content'>
+<div class='alert alert--fake js-alert'>
+<p class='alert__message js-alert-message'></p>
+<a class='alert__close js-alert-close'>
+<i class='fa fa-times'></i>
+</a>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-content__markdown-wrapper'>
+<div class='lab-preamble'>
+<h1 class='lab-preamble__title'>
+Recommend Products using ML with Cloud SQL and Dataproc
+</h1>
+<div class='lab-preamble__details subtitle-headline-1'>
+<span>1 hour 30 minutes</span>
+<span>1 Credit</span>
+<div class='lab__rating'>
+<a href="/focuses/31818/reviews?parent=catalog"><div class='rateit' data-rateit-readonly='true' data-rateit-value='4.2948'></div>
+
+</a><a data-target='#lab-review-modal' data-toggle='modal'>
+Rate Lab
+</a>
+</div>
+</div>
+</div>
+
+<div class='lab-content__inner-wrapper'>
+<div class='js-markdown-instructions lab-content__markdown markdown-lab-instructions' id='markdown-lab-instructions'>
+
+
+
+<h2 id="step1">Overview</h2>
+<p>In this lab, you populate rentals data in Cloud SQL for the rentals recommendation engine to use.</p>
+<h3><strong>What you learn</strong></h3>
+<p>In this lab, you will:</p>
+<ul>
+<li>
+<p>Create Cloud SQL instance</p>
+</li>
+<li>
+<p>Create database tables by importing .sql files from Cloud Storage</p>
+</li>
+<li>
+<p>Populate the tables by importing .csv files from Cloud Storage</p>
+</li>
+<li>
+<p>Allow access to Cloud SQL</p>
+</li>
+<li>
+<p>Explore the rentals data using SQL statements from CloudShell</p>
+</li>
+</ul>
+<h2 id="step2">Setup and requirements</h2>
+<h3>Qwiklabs setup</h3>
+<h4>Before you click the Start Lab button</h4>
+<p>Read these instructions. Labs are timed and you cannot pause them. The timer, which starts when you click Start Lab, shows how long Cloud resources will be made available to you.</p>
+<p>This Qwiklabs hands-on lab lets you do the lab activities yourself in a real cloud environment, not in a simulation or demo environment. It does so by giving you new, temporary credentials that you use to sign in and access the Google Cloud Platform for the duration of the lab.</p>
+<h4>What you need</h4>
+<p>To complete this lab, you need:</p>
+<ul>
+<li>Access to a standard internet browser (Chrome browser recommended).</li>
+<li>Time to complete the lab.</li>
+</ul>
+<p><strong><em>Note:</em></strong> If you already have your own personal GCP account or project, do not use it for this lab.</p>
+
+<h3>Google Cloud Platform Console</h3>
+<h4>How to start your lab and sign in to the Console</h4>
+<ol>
+<li>
+<p>Click the <strong>Start Lab</strong> button. If you need to pay for the lab, a pop-up opens for you to select your payment method.
+On the left is a panel populated with the temporary credentials that you must use for this lab.</p>
+<p><img alt="Open Google Console" src="https://cdn.qwiklabs.com/%2FtHp4GI5VSDyTtdqi3qDFtevuY014F88%2BFow%2FadnRgE%3D"></p>
+</li>
+<li>
+<p>Copy the username, and then click <strong>Open Google Console</strong>.
+The lab spins up resources, and then opens another tab that shows the <strong>Choose an account</strong> page.</p>
+<p><strong><em>Tip:</em></strong> Open the tabs in separate windows, side-by-side.</p>
+</li>
+<li>
+<p>On the Choose an account page, click <strong>Use Another Account</strong>.</p>
+<p><img alt="Choose an account" src="https://cdn.qwiklabs.com/eQ6xPnPn13GjiJP3RWlHWwiMjhooHxTNvzfg1AL2WPw%3D"></p>
+</li>
+<li>
+<p>The Sign in page opens. Paste the username that you copied from the Connection Details panel. Then copy and paste the password.</p>
+<p><strong><em>Important:</em></strong> You must use the credentials from the Connection Details panel. Do not use your Qwiklabs credentials. If you have your own GCP account, do not use it for this lab (avoids incurring charges).</p>
+</li>
+<li>
+<p>Click through the subsequent pages:</p>
+<ul>
+<li>Accept the terms and conditions.</li>
+<li>Do not add recovery options or two-factor authentication (because this is a temporary account).</li>
+<li>Do not sign up for free trials.</li>
+</ul>
+</li>
+</ol>
+<p>After a few moments, the GCP console opens in this tab.</p>
+<aside>
+<b>Note:</b> You can view the menu with a list of GCP Products and Services by clicking the <b>Navigation menu</b> at the top-left, next to “Google Cloud Platform”.
+<img alt="Cloud Console Menu" src="https://cdn.qwiklabs.com/9vT7xPlxoNP%2FPsK0J8j0ZPFB4HnnpaIJVCDByaBrSHg%3D">
+</aside>
+
+<h2 id="step3">Introduction</h2>
+<p>In this lab, you populate rentals data in Cloud SQL for the rentals recommendation engine to use. The recommendations engine itself will run on Dataproc using Spark ML.</p>
+<h2 id="step4">Create Cloud SQL instance</h2>
+<ol>
+<li>
+<p>In the GCP console, click <strong>SQL</strong> (in the Storage section).</p>
+</li>
+<li>
+<p>Click  <strong>Create instance</strong>.</p>
+</li>
+<li>
+<p>Choose <strong>MySQL</strong>. Click <strong>Next</strong> if required.</p>
+</li>
+<li>
+<p>For <strong>Instance ID</strong>, type <strong>rentals</strong>.</p>
+<p><img alt="ab1cdf08212ecadf.png" src="https://cdn.qwiklabs.com/4enBBCqiOP%2FMoylbsMJSGz%2Fddg%2BmLbJ1r7xOyokmf6Y%3D"></p>
+</li>
+<li>
+<p>Scroll down and specify a root password.  Before you forget, note down the root password.</p>
+</li>
+<li>
+<p>Click <strong>Create</strong> to create the instance. It will take a minute or so for your Cloud SQL instance to be provisioned.</p>
+</li>
+</ol>
+<h2 id="step5">Create tables</h2>
+<ol>
+<li>
+<p>While you wait for your instance to be created, read the below mySQL script and answer the questions that follow below</p>
+</li>
+</ol>
+<pre><code class="language-sql prettyprint">CREATE DATABASE IF NOT EXISTS recommendation_spark;&#x000A;&#x000A;USE recommendation_spark;&#x000A;&#x000A;DROP TABLE IF EXISTS Recommendation;&#x000A;DROP TABLE IF EXISTS Rating;&#x000A;DROP TABLE IF EXISTS Accommodation;&#x000A;&#x000A;CREATE TABLE IF NOT EXISTS Accommodation&#x000A;(&#x000A;  id varchar(255),&#x000A;  title varchar(255),&#x000A;  location varchar(255),&#x000A;  price int,&#x000A;  rooms int,&#x000A;  rating float,&#x000A;  type varchar(255),&#x000A;  PRIMARY KEY (ID)&#x000A;);&#x000A;&#x000A;CREATE TABLE  IF NOT EXISTS Rating&#x000A;(&#x000A;  userId varchar(255),&#x000A;  accoId varchar(255),&#x000A;  rating int,&#x000A;  PRIMARY KEY(accoId, userId),&#x000A;  FOREIGN KEY (accoId)&#x000A;    REFERENCES Accommodation(id)&#x000A;);&#x000A;&#x000A;CREATE TABLE  IF NOT EXISTS Recommendation&#x000A;(&#x000A;  userId varchar(255),&#x000A;  accoId varchar(255),&#x000A;  prediction float,&#x000A;  PRIMARY KEY(userId, accoId),&#x000A;  FOREIGN KEY (accoId)&#x000A;    REFERENCES Accommodation(id)&#x000A;);&#x000A;&#x000A;SHOW DATABASES;&#x000A;</code></pre>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"3",
+"2",
+"1"                      
+]' shuffle="" stem="How many tables will this script create?">
+</ql-multiple-choice-probe></p>
+<p><ql-multiple-choice-probe answerindex="1" optiontitles='[
+"Recommendation",
+"Rating",
+"Accommodation"                      
+]' stem="When a user rates a house (giving it four stars for example), an entry is added to the _______ table.">
+</ql-multiple-choice-probe></p>
+<p><ql-multiple-choice-probe answerindex="2" optiontitles='[
+"Recommendation",
+"Rating",
+"Accommodation"                      
+]' stem="General information about houses, such as the number of rooms they have and their average rating is stored in the _________ table.">
+</ql-multiple-choice-probe></p>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"Recommendation",
+"Rating",
+"Accommodation"                      
+]' stem="The job of the recommendation engine is to fill out the ___________ table for each user and house: this is the predicted rating of that house by that user.">
+</ql-multiple-choice-probe></p>
+<ol start="2">
+<li>
+<p>In <strong>Cloud SQL</strong>, click <strong>rentals</strong> to view instance information.</p>
+</li>
+</ol>
+<h3>Connect to the database</h3>
+<ol start="3">
+<li>Find the <strong>Connect to this instance</strong> box on the page and click on <strong>connect using Cloud Shell</strong>
+</li>
+</ol>
+<p>Note: You could also connect to your instance from a dedicated Cloud Compute Engine VM but for now we'll have Cloud Shell create a micro-VM for us and operate from there.</p>
+<ol start="4">
+<li>
+<p>Wait for Cloud Shell to load</p>
+</li>
+<li>
+<p>Once Cloud Shell loads, you will see the below command already typed:</p>
+</li>
+</ol>
+<ul>
+<li>
+<p><code>gcloud sql connect rentals --user=root --quiet</code></p>
+</li>
+</ul>
+<ol start="6">
+<li>
+<p>Hit <strong>Enter</strong></p>
+</li>
+<li>
+<p>Wait for your IP Address to be whitelisted</p>
+</li>
+</ol>
+<pre><code>Whitelisting your IP for incoming connection for 5 minutes...⠹&#x000A;</code></pre>
+<ol start="8">
+<li>When prompted, enter your password and hit Enter (note: you will not see your password typed in or even ****)</li>
+</ol>
+<p>You can now run commands against your database!
+<img alt="mysql-connection.png" src="https://cdn.qwiklabs.com/9w6LTrHn0vWVgSiXjs166kSpFDAKhCkpf4Tct48Yy8w%3D"></p>
+<ol start="9">
+<li>Run the below command</li>
+</ol>
+<pre><code class="language-bash prettyprint">SHOW DATABASES;&#x000A;</code></pre>
+<p>You should see the default system databases:</p>
+<pre><code>+--------------------+&#x000A;| Database           |&#x000A;+--------------------+&#x000A;| information_schema |&#x000A;| mysql              |&#x000A;| performance_schema |&#x000A;| sys                |&#x000A;+--------------------+&#x000A;</code></pre>
+<p>Note: You must always end your mySQL commands with a semi-colon <code>;</code></p>
+<ol start="10">
+<li>
+<p>Copy and paste the below SQL statement you analyzed earlier paste it into the command line</p>
+</li>
+</ol>
+<pre><code class="language-sql prettyprint">CREATE DATABASE IF NOT EXISTS recommendation_spark;&#x000A;&#x000A;USE recommendation_spark;&#x000A;&#x000A;DROP TABLE IF EXISTS Recommendation;&#x000A;DROP TABLE IF EXISTS Rating;&#x000A;DROP TABLE IF EXISTS Accommodation;&#x000A;&#x000A;CREATE TABLE IF NOT EXISTS Accommodation&#x000A;(&#x000A;  id varchar(255),&#x000A;  title varchar(255),&#x000A;  location varchar(255),&#x000A;  price int,&#x000A;  rooms int,&#x000A;  rating float,&#x000A;  type varchar(255),&#x000A;  PRIMARY KEY (ID)&#x000A;);&#x000A;&#x000A;CREATE TABLE  IF NOT EXISTS Rating&#x000A;(&#x000A;  userId varchar(255),&#x000A;  accoId varchar(255),&#x000A;  rating int,&#x000A;  PRIMARY KEY(accoId, userId),&#x000A;  FOREIGN KEY (accoId)&#x000A;    REFERENCES Accommodation(id)&#x000A;);&#x000A;&#x000A;CREATE TABLE  IF NOT EXISTS Recommendation&#x000A;(&#x000A;  userId varchar(255),&#x000A;  accoId varchar(255),&#x000A;  prediction float,&#x000A;  PRIMARY KEY(userId, accoId),&#x000A;  FOREIGN KEY (accoId)&#x000A;    REFERENCES Accommodation(id)&#x000A;);&#x000A;&#x000A;SHOW DATABASES;&#x000A;</code></pre>
+<ol start="11">
+<li>
+<p>Hit <strong>Enter</strong></p>
+</li>
+<li>
+<p>Confirm you see <code>recommendation_spark</code> as a database now:</p>
+</li>
+</ol>
+<pre><code>+----------------------+&#x000A;| Database             |&#x000A;+----------------------+&#x000A;| information_schema   |&#x000A;| mysql                |&#x000A;| performance_schema   |&#x000A;| recommendation_spark |&#x000A;| sys                  |&#x000A;+----------------------+&#x000A;</code></pre>
+<ol start="13">
+<li>Run the following command to show our tables</li>
+</ol>
+<pre><code class="language-sql prettyprint">USE recommendation_spark;&#x000A;&#x000A;SHOW TABLES;&#x000A;</code></pre>
+<ol start="14">
+<li>
+<p>Hit <strong>Enter</strong></p>
+</li>
+<li>
+<p>Confim you see the three tables:</p>
+</li>
+</ol>
+<pre><code>+--------------------------------+&#x000A;| Tables_in_recommendation_spark |&#x000A;+--------------------------------+&#x000A;| Accommodation                  |&#x000A;| Rating                         |&#x000A;| Recommendation                 |&#x000A;+--------------------------------+&#x000A;</code></pre>
+<ol start="16">
+<li>Run the following query</li>
+</ol>
+<pre><code class="language-sql prettyprint">SELECT * FROM Accommodation;&#x000A;</code></pre>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"Empty set (0)",
+"100",
+"1,000"                      
+]' stem="How many rows are in the Accommodation table?">
+</ql-multiple-choice-probe></p>
+<h2 id="step6">Stage Data in Google Cloud Storage</h2>
+<h3>Option 1: Use Command Line</h3>
+<ol>
+<li>
+<p>Open a new Cloud Shell tab <strong>(do not use your existing mySQL Cloud Shell tab)</strong></p>
+</li>
+<li>
+<p>Paste in the below command</p>
+</li>
+</ol>
+<pre><code class="language-bash prettyprint">echo "Creating bucket: gs://$DEVSHELL_PROJECT_ID"&#x000A;gsutil mb gs://$DEVSHELL_PROJECT_ID&#x000A;&#x000A;echo "Copying data to our storage from public dataset"&#x000A;gsutil cp gs://cloud-training/bdml/v2.0/data/accommodation.csv gs://$DEVSHELL_PROJECT_ID&#x000A;gsutil cp gs://cloud-training/bdml/v2.0/data/rating.csv gs://$DEVSHELL_PROJECT_ID&#x000A;&#x000A;echo "Show the files in our bucket"&#x000A;gsutil ls gs://$DEVSHELL_PROJECT_ID&#x000A;&#x000A;echo "View some sample data"&#x000A;gsutil cat gs://$DEVSHELL_PROJECT_ID/accommodation.csv&#x000A;</code></pre>
+<ol start="3">
+<li>
+<p>Hit <strong>Enter</strong></p>
+</li>
+</ol>
+<h3>Option 2: Use Console UI</h3>
+<p><em>Skip these steps if you already have loaded your data using the command line</em></p>
+<ol>
+<li>
+<p>Navigate to <strong>Storage</strong> and select Storage &gt; Browser</p>
+</li>
+<li>
+<p>Click <strong>Create Bucket</strong> (if one does not already exist)</p>
+</li>
+<li>
+<p>Specify your project name as the bucket name</p>
+</li>
+<li>
+<p>Click <strong>Create</strong></p>
+</li>
+<li>
+<p>Download the below files locally and then upload them inside of your new bucket:</p>
+</li>
+</ol>
+<ul>
+<li>
+<p><a href="https://storage.googleapis.com/cloud-training/bdml/v2.0/data/accommodation.csv" target="_blank">accommodation.csv</a></p>
+</li>
+<li>
+<p><a href="https://storage.googleapis.com/cloud-training/bdml/v2.0/data/rating.csv" target="_blank">rating.csv</a></p>
+</li>
+</ul>
+<h2 id="step7">Loading Data from Google Cloud Storage into Cloud SQL tables</h2>
+<ol>
+<li>
+<p>Navigate back to <strong>SQL</strong></p>
+</li>
+<li>
+<p>Click on <strong>rentals</strong></p>
+</li>
+</ol>
+<h3>Import accommodation data</h3>
+<ol>
+<li>
+<p>Click <strong>Import</strong> (top menu).</p>
+</li>
+<li>
+<p>Specify the following:</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>Cloud Storage file: <em>Browse to select accommodation.csv</em></p>
+</li>
+<li>
+<p>Format of import: CSV</p>
+</li>
+<li>
+<p>Database: select <code>recommendation_spark</code> from the drop down</p>
+</li>
+<li>
+<p>Table: copy and paste: <code>Accommodation</code></p>
+</li>
+</ul>
+<ol start="3">
+<li>Click <strong>Import</strong>
+</li>
+</ol>
+<p><img alt="import-acc-dataset" src="https://cdn.qwiklabs.com/SV%2F%2B%2Fcx1jSR8940ETRzaR46uH0B%2FqOYO8GER%2FBcM5OA%3D"></p>
+<ol start="4">
+<li>
+<p>You will be redirected back to the Overview page. Wait one minute for the data to load.</p>
+</li>
+</ol>
+<h3>Import user rating data</h3>
+<ol>
+<li>
+<p>Click <strong>Import</strong> (top menu).</p>
+</li>
+<li>
+<p>Specify the following:</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>Cloud Storage file: <em>Browse to select rating.csv</em></p>
+</li>
+<li>
+<p>Format of import: CSV</p>
+</li>
+<li>
+<p>Database: select <code>recommendation_spark</code> from the drop down</p>
+</li>
+<li>
+<p>Table: copy and paste: <code>Rating</code></p>
+</li>
+</ul>
+<ol start="3">
+<li>
+<p>Click <strong>Import</strong></p>
+</li>
+<li>
+<p>You will be redirected back to the Overview page. Wait one minute for the data to load.</p>
+</li>
+</ol>
+
+<h2 id="step8">Explore Cloud SQL data</h2>
+<ol>
+<li>
+<p>If you closed your Cloud Shell connection to mySQL, open it again by finding <strong>Connect to this instance</strong> and clicking <strong>Connect using Cloud Shell</strong></p>
+</li>
+<li>
+<p>Hit <strong>enter</strong> when prompted to login</p>
+</li>
+<li>
+<p>Provide your password and hit <strong>enter</strong></p>
+</li>
+<li>
+<p>Query the ratings data:</p>
+</li>
+</ol>
+<pre><code class="language-sql prettyprint">USE recommendation_spark;&#x000A;&#x000A;SELECT * FROM Rating&#x000A;LIMIT 15;&#x000A;</code></pre>
+<ol start="5">
+<li>Use a SQL aggregation function to count the number of rows in the table</li>
+</ol>
+<pre><code class="language-sql prettyprint">SELECT COUNT(*) AS num_ratings&#x000A;FROM Rating;&#x000A;</code></pre>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"1186",
+"100,000",
+"5,203"                      
+]' stem="How many ratings do we have in our table?">
+</ql-multiple-choice-probe></p>
+<ol start="6">
+<li>What's the average review of our accommodations?</li>
+</ol>
+<pre><code class="language-sql prettyprint">SELECT&#x000A;    COUNT(userId) AS num_ratings,&#x000A;    COUNT(DISTINCT userId) AS distinct_user_ratings,&#x000A;    MIN(rating) AS worst_rating,&#x000A;    MAX(rating) AS best_rating,&#x000A;    AVG(rating) AS avg_rating&#x000A;FROM Rating;&#x000A;</code></pre>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"2.46",
+"4.51",
+"5.0"                      
+]' shuffle="" stem="What is the average rating across all reviews?">
+</ql-multiple-choice-probe></p>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"There are 25 unique users who provided the ratings",
+"There are 25 ratings per user",
+"There are 25 ratings per accommodation"                      
+]' shuffle="" stem="What does the 25 for distinct_user_ratings mean?">
+</ql-multiple-choice-probe></p>
+<p>In machine learning, we will need a rich history of user preferences for the model to learn from. Run the below query to see which users have provided the most ratings</p>
+<pre><code class="language-sql prettyprint">SELECT&#x000A;    userId,&#x000A;    COUNT(rating) AS num_ratings&#x000A;FROM Rating&#x000A;GROUP BY userId&#x000A;ORDER BY num_ratings DESC;&#x000A;</code></pre>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"75",
+"100",
+"50"                      
+]' shuffle="" stem="How many reviews did the top user leave?">
+</ql-multiple-choice-probe></p>
+<ol start="9">
+<li>You may exit the mysql prompt by typing <strong>exit</strong>.</li>
+</ol>
+<aside>Stop here if you are done. Wait for instructions from the Instructor before going into the next section
+</aside>
+<h2 id="step9">Generating housing recommendations with Machine Learning using Cloud Dataproc</h2>
+<p>In this lab, you carry out recommendations machine learning using Dataproc.</p>
+<h3>What you learn</h3>
+<p>In this lab, you will:</p>
+<ul>
+<li>
+<p>Launch Dataproc</p>
+</li>
+<li>
+<p>Run SparkML jobs using Dataproc</p>
+</li>
+</ul>
+<h2 id="step10">Introduction</h2>
+<p>In this lab, you use Dataproc to train the recommendations machine learning model based on users' previous ratings. You then apply that model to create a list of recommendations for every user in the database.</p>
+<p>In this lab, you will:</p>
+<ul>
+<li>
+<p>Launch Dataproc</p>
+</li>
+<li>
+<p>Train and apply ML model written in PySpark to create product recommendations</p>
+</li>
+<li>
+<p>Explore inserted rows in Cloud SQL</p>
+</li>
+</ul>
+<h2 id="step11">Launch Dataproc</h2>
+<p>To launch Dataproc and configure it so that each of the machines in the cluster can access Cloud SQL:</p>
+<ol>
+<li>
+<p>In the GCP Console, on the <strong>Navigation menu</strong> (<img alt="Navigation menu" src="https://cdn.qwiklabs.com/tkgw1TDgj4Q%2BYKQUW4jUFd0O5OEKlUMBRYbhlCrF0WY%3D" title="Navigation menu">), click <strong>SQL</strong> and note the region of your Cloud SQL instance:</p>
+<p><img alt="fc8f254ae64a75b4.png" src="https://cdn.qwiklabs.com/rruQxE8GWYDTbXn5pREQ02XbkgvaVI4j9%2FVjjQj7Suk%3D"></p>
+<p>In the snapshot above, the region is <code>us-central1</code>.</p>
+</li>
+<li>
+<p>In the GCP Console, on the <strong>Navigation menu</strong> (<img alt="Navigation menu" src="https://cdn.qwiklabs.com/tkgw1TDgj4Q%2BYKQUW4jUFd0O5OEKlUMBRYbhlCrF0WY%3D" title="Navigation menu">), click <strong>Dataproc</strong> and click <strong>Enable API</strong> if prompted.</p>
+</li>
+<li>
+<p>Once enabled, click <strong>Create cluster</strong> and name your cluster <strong>rentals</strong></p>
+</li>
+<li>
+<p>Select <strong>Region</strong> as <strong>global</strong> and change the <strong>Zone</strong> to <strong>us-central1-a</strong> (in the same zone as your Cloud SQL instance). This will minimize network latency between the cluster and the database.</p>
+</li>
+<li>
+<p>For <strong>Master node</strong>, for <strong>Machine type</strong>, select <strong>2 vCPUs (n1-standard-2)</strong>.</p>
+</li>
+<li>
+<p>For <strong>Worker nodes</strong>, for <strong>Machine type</strong>, select <strong>2 vCPUs (n1-standard-2)</strong>.</p>
+</li>
+<li>
+<p>Leave all other values with their default and click <strong>Create</strong>.  It will take 1-2 minutes to provision your cluster.</p>
+</li>
+<li>
+<p>Note the <strong>Name</strong>, <strong>Zone</strong> and <strong>Total worker nodes</strong> in your cluster.</p>
+</li>
+<li>
+<p>Copy and paste the below bash script into your Cloud Shell (optionally change CLUSTER, ZONE, NWORKERS if necessary before running)</p>
+</li>
+</ol>
+<pre><code class="language-bash prettyprint">echo "Authorizing Cloud Dataproc to connect with Cloud SQL"&#x000A;CLUSTER=rentals&#x000A;CLOUDSQL=rentals&#x000A;ZONE=us-central1-a&#x000A;NWORKERS=2&#x000A;&#x000A;machines="$CLUSTER-m"&#x000A;for w in `seq 0 $(($NWORKERS - 1))`; do&#x000A;   machines="$machines $CLUSTER-w-$w"&#x000A;done&#x000A;&#x000A;echo "Machines to authorize: $machines in $ZONE ... finding their IP addresses"&#x000A;ips=""&#x000A;for machine in $machines; do&#x000A;    IP_ADDRESS=$(gcloud compute instances describe $machine --zone=$ZONE --format='value(networkInterfaces.accessConfigs[].natIP)' | sed "s/\[u'//g" | sed "s/'\]//g" )/32&#x000A;    echo "IP address of $machine is $IP_ADDRESS"&#x000A;    if [ -z  $ips ]; then&#x000A;       ips=$IP_ADDRESS&#x000A;    else&#x000A;       ips="$ips,$IP_ADDRESS"&#x000A;    fi&#x000A;done&#x000A;&#x000A;echo "Authorizing [$ips] to access cloudsql=$CLOUDSQL"&#x000A;gcloud sql instances patch $CLOUDSQL --authorized-networks $ips&#x000A;</code></pre>
+<ol start="9">
+<li>
+<p>Hit <strong>enter</strong> then, when prompted, type <strong>Y</strong>, then <strong>enter</strong> again to continue</p>
+</li>
+<li>
+<p>Wait for the patching to complete. You will see</p>
+</li>
+</ol>
+<pre><code>Patching Cloud SQL instance...done.&#x000A;</code></pre>
+<ol start="11">
+<li>Lastly, on the main Cloud SQL page, under <strong>Connect to this instance</strong> copy your <strong>Public IP Address</strong> to your clipboard (or write it down, we're using it next)</li>
+</ol>
+<p><img alt="copy-instance-ip" src="https://cdn.qwiklabs.com/%2Bf6nW8xpplUR8brKqEYzydTYonQqNu9SeX4ggmbnz7w%3D"></p>
+
+<h2 id="step12">Run ML model</h2>
+<p>To create a trained model and apply it to all the users in the system:</p>
+<p>Your data science team has created a recommendation model using Apache Spark and written in Python. Let's copy it over into our staging bucket.</p>
+<ol>
+<li>Copy over the model code by executing the below in Cloud Shell</li>
+</ol>
+<pre><code class="language-bash prettyprint">gsutil cp gs://cloud-training/bdml/v2.0/model/train_and_apply.py train_and_apply.py&#x000A;cloudshell edit train_and_apply.py&#x000A;</code></pre>
+<ol start="2">
+<li>
+<p>When prompted, select <strong>Open in Editor</strong></p>
+</li>
+<li>
+<p>Wait for the Editor UI to load</p>
+</li>
+<li>
+<p>In <code>train_and_apply.py</code>, find line 30: <strong>CLOUDSQL_INSTANCE_IP</strong> and paste your Cloud SQL IP address you copied earlier</p>
+</li>
+</ol>
+<pre><code class="language-bash prettyprint"># MAKE EDITS HERE&#x000A;CLOUDSQL_INSTANCE_IP = '&lt;paste-your-cloud-sql-ip-here&gt;'   # &lt;---- CHANGE (database server IP)&#x000A;CLOUDSQL_DB_NAME = 'recommendation_spark' # &lt;--- leave as-is&#x000A;CLOUDSQL_USER = 'root'  # &lt;--- leave as-is&#x000A;CLOUDSQL_PWD  = '&lt;type-your-cloud-sql-password-here&gt;'  # &lt;---- CHANGE&#x000A;</code></pre>
+<ol start="3">
+<li>
+<p>Find line 33: <strong>CLOUDSQL_PWD</strong> and type in your Cloud SQL password</p>
+</li>
+<li>
+<p>The editor will autosave but to be sure, select File &gt; Save</p>
+</li>
+<li>
+<p>Copy this file to your Cloud Storage bucket using this Cloud Shell command:</p>
+</li>
+</ol>
+<pre><code class="language-bash prettyprint">gsutil cp train_and_apply.py gs://$DEVSHELL_PROJECT_ID&#x000A;</code></pre>
+<h2 id="step13">Run your ML job on Dataproc</h2>
+<ol>
+<li>
+<p>In the <strong>Dataproc</strong> console, click <strong>Jobs</strong>.</p>
+<p><img alt="8508ce301ff584c3.png" src="https://cdn.qwiklabs.com/0RE2gN9iSXVkU9rk9kQQCVKuw961N%2B32AODddKBRMdM%3D"></p>
+</li>
+<li>
+<p>Click <strong>Submit job</strong>.</p>
+</li>
+<li>
+<p>For <strong>Job type</strong>, select <strong>PySpark</strong> and for <strong>Main python file</strong>, specify the location of the Python file you uploaded to your bucket. Your <code>&lt;bucket-name&gt;</code> is likely your Project Id when you can find by clicking on the Project Id dropdown in the top navigation menu.</p>
+<p><img alt="e15bafe2c29956b5.png" src="https://cdn.qwiklabs.com/ZXUqBAvJllcO09HWGJTJeYw%2FgimAj%2B%2BoU%2FGwmaHJHU0%3D"></p>
+<p><code>gs://&lt;bucket-name&gt;/train_and_apply.py</code></p>
+</li>
+<li>
+<p>Click <strong>Submit</strong></p>
+</li>
+</ol>
+<p>Note: It will take up to 5 minutes for the job to change from <code>Running</code> to <code>Succeeded</code>. You can continue to the next section on querying the results while the job runs.</p>
+
+<p>If the job <code>Failed</code>, please troubleshoot using the logs and fix the errors. You may need to re-upload the changed Python file to Cloud Storage and clone the failed job to resubmit.</p>
+
+<h2 id="step14">Explore inserted rows with SQL</h2>
+<ol>
+<li>
+<p>In a new browser tab, open <strong>SQL</strong> (in the Storage section).</p>
+</li>
+<li>
+<p>Click <strong>rentals</strong> to view details related to your Cloud SQL instance.</p>
+</li>
+<li>
+<p>Under <strong>Connect to this instance</strong> section, click <strong>Connect using Cloud Shell</strong>. This will start new Cloudshell tab. In Cloudshell tab press <strong>enter</strong>.</p>
+<p>It will take few minutes to whitelist your IP for incoming connection.</p>
+</li>
+<li>
+<p>When prompted, type the root password you configured, then <strong>enter</strong>.</p>
+</li>
+<li>
+<p>At the mysql prompt, type:</p>
+</li>
+</ol>
+<pre><code class="language-sql prettyprint">USE recommendation_spark;&#x000A;&#x000A;SELECT COUNT(*) AS count FROM Recommendation;&#x000A;</code></pre>
+<p>If you are getting an Empty Set (0) - wait for your Dataproc job to complete. If it's been more than 5 minutes, your job has likely failed and will require troubleshooting.</p>
+<p>Tip: You can use the up arrow in Cloud Shell to return your previous command (or query in this case)</p>
+<p><ql-multiple-choice-probe answerindex="0" optiontitles='[
+"125",
+"100",
+"50"                      
+]' shuffle="" stem="How many recommendations did the model provide?">
+</ql-multiple-choice-probe></p>
+<ol start="6">
+<li>
+<p>Find the recommendations for a user:</p>
+</li>
+</ol>
+<pre><code class="language-sql prettyprint">SELECT&#x000A;    r.userid,&#x000A;    r.accoid,&#x000A;    r.prediction,&#x000A;    a.title,&#x000A;    a.location,&#x000A;    a.price,&#x000A;    a.rooms,&#x000A;    a.rating,&#x000A;    a.type&#x000A;FROM Recommendation as r&#x000A;JOIN Accommodation as a&#x000A;ON r.accoid = a.id&#x000A;WHERE r.userid = 10;&#x000A;</code></pre>
+<ol start="7">
+<li>
+<p>Confirm against the below result:</p>
+</li>
+</ol>
+<pre><code>+--------+--------+------------+-----------------------------+...&#x000A;| userid | accoid | prediction | title                       |...&#x000A;+--------+--------+------------+-----------------------------+...&#x000A;| 10     | 40     |  1.9717555 | Colossal Private Castle     |...&#x000A;| 10     | 46     |  1.7060381 | Colossal Private Castle     |...&#x000A;| 10     | 74     |  1.4713808 | Giant Calm Fort             |...&#x000A;| 10     | 77     |  1.4085547 | Great Private Country House |...&#x000A;| 10     | 43     |  1.3759944 | Nice Private Hut            |...&#x000A;+--------+--------+------------+-----------------------------+...&#x000A;</code></pre>
+<p>These are the five accommodations that we would recommend to her. Note that the quality of the recommendations are not great because our dataset was so small (note that the predicted ratings are not very high). Still, this lab illustrates the process you'd go through to create product recommendations.</p>
+<h3>Congratulations!</h3>
+<h3>Recap:</h3>
+<ul>
+<li>Created a fully-managed Cloud SQL instance for rentals</li>
+<li>Created tables and explored the schema with SQL</li>
+<li>Ingested data from CSVs</li>
+<li>Edited and ran a Spark ML job on Cloud Dataproc</li>
+<li>Viewed prediction results</li>
+</ul>
+<h2 id="step15">End your lab</h2>
+<p>When you have completed your lab, click <strong>End Lab</strong>. Qwiklabs removes the resources you’ve used and cleans the account for you.</p>
+<p>You will be given an opportunity to rate the lab experience. Select the applicable number of stars, type a comment, and then click <strong>Submit</strong>.</p>
+<p>The number of stars indicates the following:</p>
+<ul>
+<li>1 star = Very dissatisfied</li>
+<li>2 stars = Dissatisfied</li>
+<li>3 stars = Neutral</li>
+<li>4 stars = Satisfied</li>
+<li>5 stars = Very satisfied</li>
+</ul>
+<p>You can close the dialog box if you don't want to provide feedback.</p>
+<p>For feedback, suggestions, or corrections, please use the <strong>Support</strong> tab.</p>
+
+<p>Copyright 2019 Google LLC All rights reserved. Google and the Google logo are trademarks of Google LLC. All other company and product names may be trademarks of the respective companies with which they are associated.</p>
+
+
+
+</div>
+<div class='js-lab-content-outline lab-content__outline'>
+<a href='#step1'>Overview</a><a href='#step2'>Setup and requirements</a><a href='#step3'>Introduction</a><a href='#step4'>Create Cloud SQL instance</a><a href='#step5'>Create tables</a><a href='#step6'>Stage Data in Google Cloud Storage</a><a href='#step7'>Loading Data from Google Cloud Storage into Cloud SQL tables</a><a href='#step8'>Explore Cloud SQL data</a><a href='#step9'>Generating housing recommendations with Machine Learning using Cloud Dataproc</a><a href='#step10'>Introduction</a><a href='#step11'>Launch Dataproc</a><a href='#step12'>Run ML model</a><a href='#step13'>Run your ML job on Dataproc</a><a href='#step14'>Explore inserted rows with SQL</a><a href='#step15'>End your lab</a>
+</div>
+</div>
+
+</div>
+
+
+</div>
+</div>
+<div class='lab-introduction js-lab-introduction is-hidden'>
+<div class='lab-introduction__inner'>
+<h1 class='headline-1'>Welcome to Your First Lab!</h1>
+<ql-icon-button class='js-skip-button'>close</ql-icon-button>
+<div class='lab-introduction__video'>
+<iframe allow='autoplay; encrypted-media' allowfullscreen frameborder='0' id='lab-introduction' src='https://www.youtube.com/embed/yF7EDXKTmoQ?enablejsapi=1&amp;rel=0&amp;showinfo=0'></iframe>
+</div>
+<a class='js-skip-button button button--outline'>Skip this video</a>
+</div>
+</div>
+
+
+
+</div>
+</main>
+<div class='modal fade' id='lab-details-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<div class='modal-body'>
+<p class='l-mbm'>
+In this lab you will build a housing rental recommendation model using Cloud SQL and Apache Spark ML jobs running on Cloud Dataproc.
+</p>
+<p class='small-label l-mbs'>
+<strong>
+Duration:
+</strong>
+0m setup
+&middot;
+90m access
+&middot;
+80m completion
+</p>
+<p class='small-label l-mbs'>
+<span><strong>Levels: </strong>introductory</span>
+</p>
+<p class='small-label'>
+<strong>
+Permalink:
+</strong>
+<a href="https://googlecoursera.qwiklabs.com/catalog_lab/1794">https://googlecoursera.qwiklabs.com/catalog_lab/1794</a>
+</p>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Got It
+</a>
+</div>
+
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='modal fade' id='lab-review-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<form class="simple_form js-lab-review-form" id="edit_lab_review_4768579" action="/lab_reviews/4768579" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="_method" value="patch" /><div class='modal-body'>
+<p class='label'>
+How satisfied are you with this lab?*
+</p>
+<div class='rateit js-rateit' data-rateit-max='5' data-rateit-min='0' data-rateit-resetable='false' data-rateit-step='1' data-rateit-value='5'></div>
+<div class='l-mtm'>
+
+<div class="control-group hidden lab_review_user_id"><div class="controls"><input class="hidden" type="hidden" value="2485272" name="lab_review[user_id]" id="lab_review_user_id" /></div></div>
+<div class="control-group hidden lab_review_classroom_id"><div class="controls"><input class="hidden" type="hidden" value="4079" name="lab_review[classroom_id]" id="lab_review_classroom_id" /></div></div>
+<div class="control-group hidden lab_review_lab_id"><div class="controls"><input class="hidden" type="hidden" value="1794" name="lab_review[lab_id]" id="lab_review_lab_id" /></div></div>
+<div class="control-group hidden lab_review_focus_id"><div class="controls"><input class="hidden" type="hidden" value="31818" name="lab_review[focus_id]" id="lab_review_focus_id" /></div></div>
+<div class="control-group hidden lab_review_rating"><div class="controls"><input class="hidden js-rating-input" type="hidden" value="2" name="lab_review[rating]" id="lab_review_rating" /></div></div>
+<div class="control-group text optional lab_review_comment"><label class="text optional control-label" for="lab_review_comment">Comment</label><div class="controls"><textarea class="text optional" name="lab_review[comment]" id="lab_review_comment">
+</textarea></div></div>
+</div>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Cancel
+</a>
+<input type="submit" name="commit" value="Submit" disabled="disabled" class="btn mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" id="submit" data-disabled="false" data-disable-with="Submit" />
+</div>
+</form>
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+
+<script>
+  $( function() {
+    ql.initMaterialInputs();
+    initChosen();
+    initSearch();
+    initTabs();
+    ql.list.init();
+    ql.favoriting.init();
+    ql.header.myAccount.init();
+    initTooltips();
+    ql.autocomplete.init();
+    ql.modals.init();
+    ql.toggleButtons.init();
+    ql.analytics.init();
+    initLabContent( );
+  ql.labOutline.links.init();
+  ql.labOutline.layout.init();
+  initLabReviewModal();
+  ql.labAssessment.init();
+  ql.labIntroduction.init( true );
+  ql.labData.init();
+  initLabTranslations( {"are_you_sure":"All done? If you end this lab, you will lose all your work. You may not be able to restart the lab if there is a quota limit. Are you sure you want to end this lab?\n","in_progress":"*In Progress*","ending":"*Ending*","starting":"*Starting, please wait*","end_concurrent_labs":"Sorry, you can only run one lab at a time. To start this lab, please confirm that you want all of your existing labs to end.\n","copied":"Copied","no_resource":"Error retrieving resource.","no_support":"No Support","mac_press":"Press ⌘-C to copy","thanks_review":"Thanks for reviewing this lab.","windows_press":"Press Ctrl-C to copy","days":"days"} );
+  ql.labRun.init();
+  ql.initHeader();
+  ql.navigation.init();
+  ql.navPanel.init();
+  ql.navigation.init();
+  
+  });
+</script>
+<style>
+  .mdl-layout__container {
+    position: static
+  }
+</style>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta content='[]' name='active-experiments'>
+<meta content='{&quot;userId&quot;:2485272}' name='help-api-product-data'>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="PkCmnfaRp0cRnsQ2wN+hIV7aIyXemyyn6vxFHKjIQHlqnCqlJBirIadg+KBWGV/RyU8if0uUWTf0VfeC/qgFNg==" />
+<title>Loading Taxi Data into Google Cloud SQL | Qwiklabs</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0' name='viewport'>
+<meta content='In this lab you will import data from CSV text files into Cloud SQL and then carry out some basic data analysis using simple queries.' name='description'>
+<meta content='Qwiklabs' name='author'>
+<meta content='1rRsY0INj8RvwB5EF5pwdxt2A2P9aDgAlsICaJ0d5w0' name='google-site-verification'>
+<meta content='Loading Taxi Data into Google Cloud SQL | Qwiklabs' property='og:title'>
+<meta content='website' property='og:type'>
+<meta content='/favicon-144.png' property='og:image'>
+<meta content='Qwiklabs' property='og:site_name'>
+<meta content='In this lab you will import data from CSV text files into Cloud SQL and then carry out some basic data analysis using simple queries.' property='og:description'>
+<meta content='/qwiklabs_logo_900x887.png' property='og:logo' size='900x887'>
+<meta content='/qwiklabs_logo_994x187.png' property='og:logo' size='994x187'>
+<meta content='#3681E4' property='msapplication-TileColor'>
+<meta content='/favicon-144.png' property='msapplication-TileImage'>
+<link href='/favicon-32.png' rel='shortcut icon'>
+<link color='#3681E4' href='/favicon-svg.svg' rel='mask-icon'>
+<link href='/favicon-180.png' rel='apple-touch-icon-precomposed'>
+<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Oswald:400|Roboto+Mono:400,700|Roboto:300,400,500,700|Google+Sans:300,400,500,700|Google+Sans+Display:400|Material+Icons|Google+Material+Icons" />
+
+
+<!--[if lt IE 9]>
+<script src='http://html5shim.googlecode.com/svn/trunk/html5.js' type='text/javascript'></script>
+<![endif]-->
+<!--[endif]>  <![endif]-->
+<script>
+//<![CDATA[
+window.gon={};gon.current_user={"firstname":"Carlo","lastname":"Andr\u00e9 Castro Galindo","fullname":"Carlo Andr\u00e9 Castro Galindo","company":"Coursera","email":"carlocastrogalindo@gmail.com","origin":"googlecoursera-run, lti-coursera","subscriptions":0,"id":"eb3f0602d940d94d2eaeef36f2aa2e77","qlCreatedAt":"2020-02-28 17:36:48 UTC","optIn":null};gon.segment="j4Im8pqIko0Lxq4wVVZWMPMM0EroHUvb";gon.deployment="googlecoursera-run";
+//]]>
+</script>
+<script src='https://www.google.com/recaptcha/api.js?render=6LeVI8IUAAAAAJNdox5eTkYrw9SbvhZ1TFyv3iHr'></script>
+<script type='application/ld+json'>
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "url": "https://www.qwiklabs.com/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.qwiklabs.com/catalog?keywords={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script id='ze-snippet' src='https://static.zdassets.com/ekr/snippet.js?key=511e4158-0aec-4e3c-b2e6-4daa1769f51e'></script>
+
+
+
+<link rel="stylesheet" media="all" href="https://cdn.qwiklabs.com/assets/application-f10403ed299ec2ae6753a3eff8eb3091bcd0b12738b15cc80bef5381c8390851.css" />
+<script>
+  EVENT_SOURCE_BASE_URL = "https://googlecoursera-run.qwiklabs.com/nchan-sub?id=";
+</script>
+<script src="https://cdn.qwiklabs.com/polyfills/webcomponents-loader.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/hallofmirrors/hallofmirrors-4ae42e7c642e419b2a36d6669f85c611571ff39438f248a4851fc43a3213e36b.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.qwiklabs.com/assets/vendor-45d462772c30000424907184f70c7157e95fb6227698d1671c5051818a6f60d8.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/application-62dd18a5d24cafd385e8d522b9397c4c78c80e392576bae9fcd6e2f994fee522.js"></script>
+</head>
+<body class='focuses focuses-show lab-show l-full no-nav'>
+<div class='header-container'>
+<div class='header'>
+<a class='mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect header__button header__button--nav header__nav-panel-button js-nav-toggle'>
+<i class='material-icons'>menu</i>
+</a>
+<div class='header__title'>
+<a class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--nav" href="https://www.coursera.org/"><ql-icon>arrow_back</ql-icon></a>
+
+<h1 class='headline-5'>
+Loading Taxi Data into Google Cloud SQL
+</h1>
+</div>
+<div class='header__actions'>
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--action header__button--search js-header-search-bar-button'>
+<i class='material-icons'>search</i>
+</a>
+
+<ql-help context="lab" productdata="{&quot;userId&quot;:2485272}" data-analytics-action="opened_help" data-analytics-label="lab"></ql-help>
+<a class='header-my-account-button mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect js-my-account-button'>
+<img class="avatar " alt="avatar image" src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+</a>
+<div class='header-my-account-menu js-my-account-menu'>
+<div class='card elevation-2 no-padding'>
+<div class='my-account-menu__top'>
+<img class="avatar " alt="avatar image" src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+<div class='my-account-menu__info'>
+<h4 class='subtitle-headline-1'>
+Carlo André Castro Galindo
+</h4>
+<p class='body-2 text--gray'>
+<span>carlocastrogalindo@gmail.com</span>
+</p>
+<a class="button" href="/my_account/profile">My Account</a>
+</div>
+</div>
+<div class='my-account-menu__bottom'>
+<a class="text--green subtitle-headline-2" href="/my_account/credits">0 Credits
+</a><a data-analytics-action="clicked_sign_out" class="button button--hairline" rel="nofollow" data-method="delete" href="/users/sign_out">Sign Out</a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div class='header__search-bar js-header-search-bar'>
+<form id="catalog-search-mobile" onsubmit="ql.catalogSearchFilter(); return false;" action="/searches/elasticsearch" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="mUsy07MyDfzJ4R+N1rq6Q7zPhbl1thqF5e3dxAqU1AbNl77rYbsBmn8fIxtAfESzK1qE4+C5bxX7RG9aXPSRSQ==" />
+<input type="text" name="keywords" id="keywords" placeholder="Search" maxlength="255" aria-label="catalog search bar" />
+</form>
+
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button'>
+<i class='material-icons'>close</i>
+</a>
+</div>
+</div>
+
+<nav class='nav-bar'>
+<a class="nav-bar__item js-navigation-button" href="/"><ql-icon class='nav-bar__item__icon'>
+home
+</ql-icon>
+<span class='nav-bar__item__label'>
+Home
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/catalog"><ql-icon class='nav-bar__item__icon'>
+school
+</ql-icon>
+<span class='nav-bar__item__label'>
+Catalog
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/my_learning"><ql-icon class='nav-bar__item__icon'>
+event_note
+</ql-icon>
+<span class='nav-bar__item__label'>
+My Learning
+</span>
+</a>
+</nav>
+
+<nav class='nav-panel js-nav-panel'>
+<div class='nav-panel__logo'>
+<div class='logo logo--blue'></div>
+</div>
+<a title="Home" tabindex="-1" class="nav-panel__item js-navigation-button" href="/"><ql-icon class='nav-panel__item__icon'>
+home
+</ql-icon>
+<div class='nav-panel__item__label'>
+Home
+</div>
+</a>
+<a title="Catalog" tabindex="-1" class="nav-panel__item js-navigation-button" href="/catalog"><ql-icon class='nav-panel__item__icon'>
+school
+</ql-icon>
+<div class='nav-panel__item__label'>
+Catalog
+</div>
+</a>
+<a title="My Learning" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_learning"><ql-icon class='nav-panel__item__icon'>
+event_note
+</ql-icon>
+<div class='nav-panel__item__label'>
+My Learning
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a title="Profile" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/profile"><ql-icon class='nav-panel__item__icon'>
+account_circle
+</ql-icon>
+<div class='nav-panel__item__label'>
+Profile
+</div>
+</a>
+<a title="Credits &amp; Subscriptions" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/credits"><ql-icon class='nav-panel__item__icon'>
+money
+</ql-icon>
+<div class='nav-panel__item__label'>
+Credits &amp; Subscriptions
+</div>
+</a>
+<a title="Security" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/security"><ql-icon class='nav-panel__item__icon'>
+security
+</ql-icon>
+<div class='nav-panel__item__label'>
+Security
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a class="nav-panel__item" tabindex="-1" href="#"><ql-help>
+<div class='nav-panel__help-item'>
+<ql-icon class='nav-panel__item__icon'>help</ql-icon>
+<div class='nav-panel__item__label'>Help</div>
+</div>
+</ql-help>
+</a><div class='nav-panel__small-links'>
+<a tabindex="-1" href="/privacy_policy">Privacy</a>
+<a tabindex="-1" href="/terms_of_service">Terms</a>
+</div>
+</nav>
+<div class='nav-panel__overlay js-nav-toggle'></div>
+
+<main class='js-main'>
+<span class='hidden' id='flash-sibling-before'></span>
+
+<div class='l-main-wrapper' id='main-wrapper'>
+
+
+
+
+
+
+
+<div class='js-lab-state' data-analytics-payload='{&quot;label&quot;:&quot;Loading Taxi Data into Google Cloud SQL&quot;,&quot;lab_name&quot;:&quot;Loading Taxi Data into Google Cloud SQL&quot;,&quot;classroom_name&quot;:null,&quot;deployment&quot;:&quot;googlecoursera-run&quot;}' data-focus-id='46131' data-lab-billing-limit='0.0' data-lab-duration='3600' data-parent='classroom'></div>
+<ql-lab-control-panel class='js-lab-control-panel l-lab-control-panel' connectionDetails='[]' connectionFiles='[]' labControlButton='{&quot;disabled&quot;:false,&quot;pending&quot;:false,&quot;running&quot;:false}' labTimer='{&quot;ticking&quot;:false,&quot;secondsRemaining&quot;:3600}' studentResources='[]'></ql-lab-control-panel>
+<div class='l-lab-main-body'>
+<div class='js-lab-content lab-content'>
+<div class='alert alert--fake js-alert'>
+<p class='alert__message js-alert-message'></p>
+<a class='alert__close js-alert-close'>
+<i class='fa fa-times'></i>
+</a>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-content__markdown-wrapper'>
+<div class='lab-preamble'>
+<h1 class='lab-preamble__title'>
+Loading Taxi Data into Google Cloud SQL
+</h1>
+<div class='lab-preamble__details subtitle-headline-1'>
+<span>1 hour </span>
+<span>7 Credits</span>
+<div class='lab__rating'>
+<a href="/focuses/46131/reviews?parent=catalog"><div class='rateit' data-rateit-readonly='true' data-rateit-value='4.4239'></div>
+
+</a><a data-target='#lab-review-modal' data-toggle='modal'>
+Rate Lab
+</a>
+</div>
+</div>
+</div>
+
+<div class='lab-content__inner-wrapper'>
+<div class='js-markdown-instructions lab-content__markdown markdown-lab-instructions' id='markdown-lab-instructions'>
+
+
+
+<h2 id="step1">Overview</h2>
+<p>In this lab, you will learn how to import data from CSV text files into Cloud SQL and then carry out some basic data analysis using simple queries.</p>
+<p>The dataset used in this lab is collected by the <a href="https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page">NYC Taxi and Limousine Commission</a> and includes trip records from all trips completed in Yellow and Green taxis in NYC from 2009 to present, and all trips in for-hire vehicles (FHV) from 2015 to present. Records include fields capturing pick-up and drop-off dates/times, pick-up and drop-off locations, trip distances, itemized fares, rate types, payment types, and driver-reported passenger counts.</p>
+<p>This dataset can be used to demonstrate a wide range of data science concepts and techniques and will be used in several of the labs in the Data Engineering curriculum.</p>
+<h2 id="step2">Objectives</h2>
+<ul>
+<li>
+<p>Create Cloud SQL instance</p>
+</li>
+<li>
+<p>Create a Cloud SQL database</p>
+</li>
+<li>
+<p>Import text data into Cloud SQL</p>
+</li>
+<li>
+<p>Check the data for integrity</p>
+</li>
+</ul>
+<h2 id="step3">Setup and Requirements</h2>
+<h4>What you'll need</h4>
+<p>To complete this lab, you’ll need:</p>
+<ul>
+<li>
+<p>Access to a standard internet browser (Chrome browser recommended).</p>
+</li>
+<li>
+<p>Time. Note the lab’s <strong>Completion</strong> time in Qwiklabs. This is an estimate of the time it should take to complete all steps.  Plan your schedule so you have time to complete the lab. Once you start the lab, you will not be able to pause and return later (you begin at step 1 every time you start a lab).</p>
+</li>
+<li>
+<p>The lab's <strong>Access</strong> time is how long your lab resources will be available. If you finish your lab with access time still available, you will be able to explore the Google Cloud Platform or work on any section of the lab that was marked "if you have time". Once the Access time runs out, your lab will end and all resources will terminate.</p>
+</li>
+<li>
+<p>You <strong>DO NOT</strong> need a Google Cloud Platform account or project. An account, project and associated resources are provided to you as part of this lab.</p>
+</li>
+<li>
+<p>If you already have your own GCP account, make sure you do not use it for this lab.</p>
+</li>
+<li>
+<p>If your lab prompts you to log into the console, <strong>use only the student account provided to you by the lab</strong>. This prevents you from incurring charges for lab activities in your personal GCP account.</p>
+</li>
+</ul>
+<h4>Start your lab</h4>
+<p>When you are ready, click <strong>Start Lab</strong>. You can track your lab’s progress with the status bar at the top of your screen.</p>
+<aside>
+<strong>Important</strong> What is happening during this time?
+  Your lab is spinning up GCP resources for you behind the scenes, including an account, a project, resources within the project, and permission for you to control the resources needed to run the lab. This means that instead of spending time manually setting up a project and building resources from scratch as part of your lab, you can begin learning more quickly.
+
+</aside>
+<h4>Find Your Lab’s GCP Username and Password</h4>
+<p>To access the resources and console for this lab, locate the Connection Details panel in Qwiklabs.  Here you will find the account ID and password for the account you will use to log in to the Google Cloud Platform:</p>
+<p><img alt="Open Google Console" src="https://cdn.qwiklabs.com/0d78dhX6IVMVWmixCPPSBbmi5O2GPokCXf1Ps1AkTgI%3D"></p>
+<p>If your lab provides other resource identifiers or connection-related information, it will appear on this panel as well.</p>
+
+<h4>Log in to Google Cloud Console</h4>
+<p>Using the Qwiklabs browser tab/window or the separate browser you are using for the Qwiklabs session, copy the Username from the Connection Details panel and click the <strong>Open Google Console</strong> button.</p>
+<p>You'll be asked to Choose an account. Click <strong>Use another account</strong>.
+<img alt="Google_choose_Account" src="https://cdn.qwiklabs.com/wNoohdL%2BwyBavWAhxkN5euPH2ulJhiOzoBlmi1%2BmGSw%3D"></p>
+<p>Paste in the Username, and then the Password as prompted:</p>
+<p><img alt="Sign in to continue to Google Cloud Platform" src="https://cdn.qwiklabs.com/rP81bHN99Vr7kaKU7fqy2IuSj1rjjNXkD1iunRSBWBw%3D"></p>
+<p>Accept the terms and conditions.</p>
+<p>Since this is a temporary account, which you will only have to access for this one lab:</p>
+<ul>
+<li>Do not add recovery options</li>
+<li>Do not sign up for free trials</li>
+</ul>
+<aside>
+<strong>Note:</strong> You can view the list of services by clicking the GCP Navigation menu button at the top-left next to “Google Cloud Platform”.
+
+  <img alt="Cloud Console Menu" src="https://cdn.qwiklabs.com/RIuVVYUkGtVaWhxtIFJugxyy%2FORWQYw7OrLR0bJlReI%3D">
+</aside>
+
+<h3>Activate Google Cloud Shell</h3>
+<p>Google Cloud Shell is a virtual machine that is loaded with development tools. It offers a persistent 5GB home directory and runs on the Google Cloud.
+Google Cloud Shell provides command-line access to your GCP resources.</p>
+<ol>
+<li>
+<p>In GCP console, on the top right toolbar, click the Open Cloud Shell button.</p>
+<p><img alt="Cloud Shell icon" src="https://cdn.qwiklabs.com/vdY5e%2Fan9ZGXw5a%2FZMb1agpXhRGozsOadHURcR8thAQ%3D"></p>
+</li>
+<li>
+<p>Click <strong>Continue</strong>.
+<img alt="cloudshell_continue.png" src="https://cdn.qwiklabs.com/lr3PBRjWIrJ%2BMQnE8kCkOnRQQVgJnWSg4UWk16f0s%2FA%3D"></p>
+</li>
+</ol>
+<p>It takes a few moments to provision and connect to the environment. When you are connected, you are already authenticated, and the project is set to your <em>PROJECT_ID</em>. For example:</p>
+<p><img alt="Cloud Shell Terminal" src="https://cdn.qwiklabs.com/hmMK0W41Txk%2B20bQyuDP9g60vCdBajIS%2B52iI2f4bYk%3D"></p>
+<p><strong>gcloud</strong> is the command-line tool for Google Cloud Platform. It comes pre-installed on Cloud Shell and supports tab-completion.</p>
+<p>You can list the active account name with this command:</p>
+<pre><code>gcloud auth list&#x000A;</code></pre>
+<p>Output:</p>
+<pre><code class="language-output prettyprint">Credentialed accounts:&#x000A; - &lt;myaccount&gt;@&lt;mydomain&gt;.com (active)&#x000A;</code></pre>
+<p>Example output:</p>
+<pre><code class="language-Output prettyprint">Credentialed accounts:&#x000A; - google1623327_student@qwiklabs.net&#x000A;</code></pre>
+<p>You can list the project ID with this command:</p>
+<pre><code>gcloud config list project&#x000A;</code></pre>
+<p>Output:</p>
+<pre><code class="language-output prettyprint">[core]&#x000A;project = &lt;project_ID&gt;&#x000A;</code></pre>
+<p>Example output:</p>
+<pre><code class="language-Output prettyprint">[core]&#x000A;project = qwiklabs-gcp-44776a13dea667a6&#x000A;</code></pre>
+<ql-infobox>
+  Full documentation of <strong>gcloud</strong> is available on <a href="https://cloud.google.com/sdk/gcloud">Google Cloud gcloud Overview</a>.
+</ql-infobox>
+
+<h2 id="step4">Preparing your Environment</h2>
+<p>Create environment variables that will be used later in the lab for your project ID and the storage bucket that will contain your data:</p>
+<pre><code>export PROJECT_ID=$(gcloud info --format='value(config.project)')&#x000A;export BUCKET=${PROJECT_ID}-ml&#x000A;</code></pre>
+<h2 id="step5">Create a Cloud SQL instance</h2>
+<p>Enter the following commands to create a Cloud SQL instance:</p>
+<pre><code>gcloud sql instances create taxi \&#x000A;    --tier=db-n1-standard-1 --activation-policy=ALWAYS&#x000A;</code></pre>
+<p>This will take a few minutes to complete.</p>
+<h3>Test Completed Task</h3>
+<p>Click <strong>Check my progress</strong> to verify your performed task. If you have completed the task successfully you will granted with an assessment score.</p>
+<ql-activity-tracking step="1">
+    Create a Cloud SQL instance.
+</ql-activity-tracking>
+<p>Set a root password for the Cloud SQL instance:</p>
+<pre><code>gcloud sql users set-password root --host % --instance taxi \&#x000A; --password Passw0rd&#x000A;</code></pre>
+<p>When prompted for the password type <code>Passw0rd</code> and press enter this will update root password.</p>
+<p>Now create an environment variable with the IP address of the Cloud Shell:</p>
+<pre><code>export ADDRESS=$(wget -qO - http://ipecho.net/plain)/32&#x000A;</code></pre>
+<p>Whitelist the Cloud Shell instance for management access to your SQL instance.</p>
+<pre><code>gcloud sql instances patch taxi --authorized-networks $ADDRESS&#x000A;</code></pre>
+<p>When prompted press <strong>Y</strong> to accept the change.</p>
+<h3>Test Completed Task</h3>
+<p>Click <strong>Check my progress</strong> to verify your performed task. If you have completed the task successfully you will granted with an assessment score.</p>
+<ql-activity-tracking step="2">
+    Whitelist the Cloud Shell instance to access your SQL instance.
+</ql-activity-tracking>
+<p>Get the IP address of your Cloud SQL instance by running:</p>
+<pre><code>MYSQLIP=$(gcloud sql instances describe \&#x000A;taxi --format="value(ipAddresses.ipAddress)")&#x000A;</code></pre>
+<p>Check the variable MYSQLIP:</p>
+<pre><code>echo $MYSQLIP&#x000A;</code></pre>
+<p>you should get an IP address as an output.</p>
+<p>Create the taxi trips table by logging into the <code>mysql</code> command line interface.</p>
+<pre><code>mysql --host=$MYSQLIP --user=root \&#x000A;      --password --verbose&#x000A;</code></pre>
+<p>When prompted for a password enter <code>Passw0rd</code>. Paste the following content into the command line to create the schema for the <code>trips</code> table:</p>
+<pre><code class="language-bash prettyprint">create database if not exists bts;&#x000A;use bts;&#x000A;&#x000A;drop table if exists trips;&#x000A;&#x000A;create table trips (&#x000A;  vendor_id VARCHAR(16),		&#x000A;  pickup_datetime DATETIME,&#x000A;  dropoff_datetime DATETIME,&#x000A;  passenger_count INT,&#x000A;  trip_distance FLOAT,&#x000A;  rate_code VARCHAR(16),&#x000A;  store_and_fwd_flag VARCHAR(16),&#x000A;  payment_type VARCHAR(16),&#x000A;  fare_amount FLOAT,&#x000A;  extra FLOAT,&#x000A;  mta_tax FLOAT,&#x000A;  tip_amount FLOAT,&#x000A;  tolls_amount FLOAT,&#x000A;  imp_surcharge FLOAT,&#x000A;  total_amount FLOAT,&#x000A;  pickup_location_id VARCHAR(16),&#x000A;  dropoff_location_id VARCHAR(16)&#x000A;);&#x000A;</code></pre>
+<h3>Test Completed Task</h3>
+<p>Click <strong>Check my progress</strong> to verify your performed task. If you have completed the task successfully you will granted with an assessment score.</p>
+<ql-activity-tracking step="3">
+    Create a bts database and trips table.
+</ql-activity-tracking>
+<p>In the <code>mysql</code> command line interface check the import by entering the following commands:</p>
+<pre><code>describe trips;&#x000A;</code></pre>
+<p>Query the <code>trips</code> table:</p>
+<pre><code class="language-sql prettyprint">select distinct(pickup_location_id) from trips;&#x000A;</code></pre>
+<p>This will return an empty set as there is no data in the database yet.</p>
+<p>Exit the <code>mysql</code> interactive console:</p>
+<pre><code>exit&#x000A;</code></pre>
+<h2 id="step6">Add data to Cloud SQL instance</h2>
+<p>Now you'll copy the New York City taxi trips CSV files stored on Cloud Storage locally. To keep resource usage low, you'll only be working with a subset of the data (~20,000 rows).</p>
+<p>Run the following in the command line:</p>
+<pre><code>gsutil cp gs://cloud-training/OCBL013/nyc_tlc_yellow_trips_2018_subset_1.csv trips.csv-1&#x000A;gsutil cp gs://cloud-training/OCBL013/nyc_tlc_yellow_trips_2018_subset_2.csv trips.csv-2&#x000A;</code></pre>
+<p>Import the CSV file data into Cloud SQL using <code>mysql</code>:</p>
+<pre><code>mysqlimport --local --host=$MYSQLIP --user=root --password \&#x000A;--ignore-lines=1 --fields-terminated-by=',' bts trips.csv-*&#x000A;</code></pre>
+<p>When prompted for a password enter <code>Passw0rd</code>.</p>
+<p>Connect to the <code>mysql</code> interactive console:</p>
+<pre><code>mysql --host=$MYSQLIP --user=root  --password&#x000A;</code></pre>
+<p>When prompted for a password enter <code>Passw0rd</code>.</p>
+<h2 id="step7">Checking for data integrity</h2>
+<p>Whenever data is imported from a source it's always important to check for data integrity. Roughly, this means making sure the data meets your expectations.</p>
+<p>In the <code>mysql</code> interactive console select the database:</p>
+<pre><code>use bts;&#x000A;</code></pre>
+<p>Query the <code>trips</code> table for unique pickup location regions:</p>
+<pre><code class="language-SQL prettyprint">select distinct(pickup_location_id) from trips;&#x000A;</code></pre>
+<p>This should return 159 unique ids. Let's start by digging into the <code>trip_distance</code> column. Enter the following query into the console:</p>
+<pre><code class="language-sql prettyprint">select&#x000A;  max(trip_distance),&#x000A;  min(trip_distance)&#x000A;from&#x000A;  trips;&#x000A;</code></pre>
+<p>One would expect the trip distance to be greater than 0 and less than, say 1000 miles. The maximum trip distance returned of 85 miles seems reasonable but the minimum trip distance of 0 seems buggy. How many trips in the dataset have a trip distance of 0?</p>
+<pre><code class="language-sql prettyprint">select count(*) from trips where trip_distance = 0;&#x000A;</code></pre>
+<p>There are 155 such trips in the database. These trips warrant further exploration. You'll find that these trips have non-zero payment amounts associated with them. Perhaps these are fraudulent transactions? Let's see if we can find more data that doesn't meet our expectations. We expect the <code>fare_amount</code> column to be positive. Enter the following query to see if this is true in the database:</p>
+<pre><code class="language-SQL prettyprint">select count(*) from trips where fare_amount &lt; 0;&#x000A;</code></pre>
+<p>There should be 14 such trips returned. Again, these trips warrant further exploration. There may be a reasonable explanation for why the fares take on negative numbers. However, it's up to the data engineer to ensure there are no bugs in the data pipeline that would cause such a result.</p>
+<p>Finally, let's investigate the <code>payment_type</code> column.</p>
+<pre><code class="language-sql prettyprint">select&#x000A;  payment_type,&#x000A;  count(*)&#x000A;from&#x000A;  trips&#x000A;group by&#x000A;  payment_type;&#x000A;</code></pre>
+<p>The results of the query indicate that there are four different payment types, with:</p>
+<ul>
+<li>payment type = 1 has 13863 rows</li>
+<li>payment type = 2 has 6016 rows</li>
+<li>payment type = 3 has 113 rows</li>
+<li>payment type = 4 has 32 rows</li>
+</ul>
+<p>Digging into <a href="https://www1.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf">the documentation</a>, a payment type of 1 refers to credit card use, payment type of 2 is cash, and a payment type of 4 refers to a dispute. The figures make sense.</p>
+<p>Exit the 'mysql' interactive console:</p>
+<pre><code>exit&#x000A;</code></pre>
+<h2 id="step8">End your lab</h2>
+<p>When you have completed your lab, click <strong>End Lab</strong>. Qwiklabs removes the resources you’ve used and cleans the account for you.</p>
+<p>You will be given an opportunity to rate the lab experience. Select the applicable number of stars, type a comment, and then click <strong>Submit</strong>.</p>
+<p>The number of stars indicates the following:</p>
+<ul>
+<li>1 star = Very dissatisfied</li>
+<li>2 stars = Dissatisfied</li>
+<li>3 stars = Neutral</li>
+<li>4 stars = Satisfied</li>
+<li>5 stars = Very satisfied</li>
+</ul>
+<p>You can close the dialog box if you don't want to provide feedback.</p>
+<p>For feedback, suggestions, or corrections, please use the <strong>Support</strong> tab.</p>
+
+<p>©2019 Google LLC All rights reserved. Google and the Google logo are trademarks of Google LLC. All other company and product names may be trademarks of the respective companies with which they are associated.</p>
+
+
+
+</div>
+<div class='js-lab-content-outline lab-content__outline'>
+<a href='#step1'>Overview</a><a href='#step2'>Objectives</a><a href='#step3'>Setup and Requirements</a><a href='#step4'>Preparing your Environment</a><a href='#step5'>Create a Cloud SQL instance</a><a href='#step6'>Add data to Cloud SQL instance</a><a href='#step7'>Checking for data integrity</a><a href='#step8'>End your lab</a>
+</div>
+</div>
+
+</div>
+
+
+</div>
+</div>
+<div class='lab-assessment__tab js-lab-assessment-tab'>
+<h5 class='small-label'>
+Score
+</h5>
+<h3 class='js-lab-assessment-total-score'>
+&mdash;/15
+</h3>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-assessment__panel js-lab-assessment-panel'>
+<!-- / If lab_instance has is started and assessment is generated, use -->
+<!-- / lab_instance.assessment, otherwise use lab.assessment_manual -->
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Create a Cloud SQL instance
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='1'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-1'>
+</span>
+/ 5
+</p>
+</div>
+
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Whitelist the Cloud Shell instance to access your SQL instance
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='2'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-2'>
+</span>
+/ 5
+</p>
+</div>
+
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Create a bts database and flights table using the create_table.sql file
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='3'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-3'>
+</span>
+/ 5
+</p>
+</div>
+
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-introduction js-lab-introduction is-hidden'>
+<div class='lab-introduction__inner'>
+<h1 class='headline-1'>Welcome to Your First Lab!</h1>
+<ql-icon-button class='js-skip-button'>close</ql-icon-button>
+<div class='lab-introduction__video'>
+<iframe allow='autoplay; encrypted-media' allowfullscreen frameborder='0' id='lab-introduction' src='https://www.youtube.com/embed/yF7EDXKTmoQ?enablejsapi=1&amp;rel=0&amp;showinfo=0'></iframe>
+</div>
+<a class='js-skip-button button button--outline'>Skip this video</a>
+</div>
+</div>
+
+
+
+</div>
+</main>
+<div class='modal fade' id='lab-details-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<div class='modal-body'>
+<p class='l-mbm'>
+In this lab you will import data from CSV text files into Cloud SQL and then carry out some basic data analysis using simple queries.
+</p>
+<p class='small-label l-mbs'>
+<strong>
+Duration:
+</strong>
+0m setup
+&middot;
+60m access
+&middot;
+60m completion
+</p>
+<p class='small-label l-mbs'>
+<span><strong>Levels: </strong>Advanced</span>
+</p>
+<p class='small-label'>
+<strong>
+Permalink:
+</strong>
+<a href="https://googlecoursera.qwiklabs.com/catalog_lab/2118">https://googlecoursera.qwiklabs.com/catalog_lab/2118</a>
+</p>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Got It
+</a>
+</div>
+
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='modal fade' id='lab-review-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<form class="simple_form js-lab-review-form" id="new_lab_review" action="/lab_reviews" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><div class='modal-body'>
+<p class='label'>
+How satisfied are you with this lab?*
+</p>
+<div class='rateit js-rateit' data-rateit-max='5' data-rateit-min='0' data-rateit-resetable='false' data-rateit-step='1' data-rateit-value='0'></div>
+<div class='l-mtm'>
+
+<div class="control-group hidden lab_review_user_id"><div class="controls"><input class="hidden" type="hidden" value="2485272" name="lab_review[user_id]" id="lab_review_user_id" /></div></div>
+<div class="control-group hidden lab_review_classroom_id"><div class="controls"><input class="hidden" type="hidden" value="5896" name="lab_review[classroom_id]" id="lab_review_classroom_id" /></div></div>
+<div class="control-group hidden lab_review_lab_id"><div class="controls"><input class="hidden" type="hidden" value="2118" name="lab_review[lab_id]" id="lab_review_lab_id" /></div></div>
+<div class="control-group hidden lab_review_focus_id"><div class="controls"><input class="hidden" type="hidden" value="46131" name="lab_review[focus_id]" id="lab_review_focus_id" /></div></div>
+<div class="control-group hidden lab_review_rating"><div class="controls"><input class="hidden js-rating-input" type="hidden" name="lab_review[rating]" id="lab_review_rating" /></div></div>
+<div class="control-group text optional lab_review_comment"><label class="text optional control-label" for="lab_review_comment">Comment</label><div class="controls"><textarea class="text optional" name="lab_review[comment]" id="lab_review_comment">
+</textarea></div></div>
+</div>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Cancel
+</a>
+<input type="submit" name="commit" value="Submit" disabled="disabled" class="btn mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" id="submit" data-disabled="false" data-disable-with="Submit" />
+</div>
+</form>
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+
+<script>
+  $( function() {
+    ql.initMaterialInputs();
+    initChosen();
+    initSearch();
+    initTabs();
+    ql.list.init();
+    ql.favoriting.init();
+    ql.header.myAccount.init();
+    initTooltips();
+    ql.autocomplete.init();
+    ql.modals.init();
+    ql.toggleButtons.init();
+    ql.analytics.init();
+    initLabContent( );
+  ql.labOutline.links.init();
+  ql.labOutline.layout.init();
+  initLabReviewModal();
+  ql.labAssessment.init();
+  ql.labIntroduction.init( true );
+  ql.labData.init();
+  initLabTranslations( {"are_you_sure":"All done? If you end this lab, you will lose all your work. You may not be able to restart the lab if there is a quota limit. Are you sure you want to end this lab?\n","in_progress":"*In Progress*","ending":"*Ending*","starting":"*Starting, please wait*","end_concurrent_labs":"Sorry, you can only run one lab at a time. To start this lab, please confirm that you want all of your existing labs to end.\n","copied":"Copied","no_resource":"Error retrieving resource.","no_support":"No Support","mac_press":"Press ⌘-C to copy","thanks_review":"Thanks for reviewing this lab.","windows_press":"Press Ctrl-C to copy","days":"days"} );
+  ql.labRun.init();
+  ql.initHeader();
+  ql.navigation.init();
+  ql.navPanel.init();
+  ql.navigation.init();
+  
+  });
+</script>
+<style>
+  .mdl-layout__container {
+    position: static
+  }
+</style>
+</body>
+</html>

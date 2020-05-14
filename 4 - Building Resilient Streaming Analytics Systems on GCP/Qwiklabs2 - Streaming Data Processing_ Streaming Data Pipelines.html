@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta content='[]' name='active-experiments'>
+<meta content='{&quot;userId&quot;:2485272}' name='help-api-product-data'>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="kh1yKlfdNvG2jfEzpAXqpk8j/L722rikbiemwlFgu7aMsWQaD1COGlNjF5HES1UewpUGMzUAvShUOFT3ORGDGQ==" />
+<title>Streaming Data Processing: Streaming Data Pipelines | Qwiklabs</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0' name='viewport'>
+<meta content='Streaming Data Processing: Streaming Data Pipelines' name='description'>
+<meta content='Qwiklabs' name='author'>
+<meta content='1rRsY0INj8RvwB5EF5pwdxt2A2P9aDgAlsICaJ0d5w0' name='google-site-verification'>
+<meta content='Streaming Data Processing: Streaming Data Pipelines | Qwiklabs' property='og:title'>
+<meta content='website' property='og:type'>
+<meta content='/favicon-144.png' property='og:image'>
+<meta content='Qwiklabs' property='og:site_name'>
+<meta content='Streaming Data Processing: Streaming Data Pipelines' property='og:description'>
+<meta content='/qwiklabs_logo_900x887.png' property='og:logo' size='900x887'>
+<meta content='/qwiklabs_logo_994x187.png' property='og:logo' size='994x187'>
+<meta content='#3681E4' property='msapplication-TileColor'>
+<meta content='/favicon-144.png' property='msapplication-TileImage'>
+<link href='/favicon-32.png' rel='shortcut icon'>
+<link color='#3681E4' href='/favicon-svg.svg' rel='mask-icon'>
+<link href='/favicon-180.png' rel='apple-touch-icon-precomposed'>
+<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Oswald:400|Roboto+Mono:400,700|Roboto:300,400,500,700|Google+Sans:300,400,500,700|Google+Sans+Display:400|Material+Icons|Google+Material+Icons" />
+
+
+<!--[if lt IE 9]>
+<script src='http://html5shim.googlecode.com/svn/trunk/html5.js' type='text/javascript'></script>
+<![endif]-->
+<!--[endif]>  <![endif]-->
+<script>
+//<![CDATA[
+window.gon={};gon.current_user={"firstname":"Carlo","lastname":"Andr\u00e9 Castro Galindo","fullname":"Carlo Andr\u00e9 Castro Galindo","company":"Coursera","email":"carlocastrogalindo@gmail.com","origin":"googlecoursera-run, lti-coursera","subscriptions":0,"id":"eb3f0602d940d94d2eaeef36f2aa2e77","qlCreatedAt":"2020-02-28 17:36:48 UTC","optIn":null};gon.segment="j4Im8pqIko0Lxq4wVVZWMPMM0EroHUvb";gon.deployment="googlecoursera-run";
+//]]>
+</script>
+<script src='https://www.google.com/recaptcha/api.js?render=6LeVI8IUAAAAAJNdox5eTkYrw9SbvhZ1TFyv3iHr'></script>
+<script type='application/ld+json'>
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "url": "https://www.qwiklabs.com/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.qwiklabs.com/catalog?keywords={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script id='ze-snippet' src='https://static.zdassets.com/ekr/snippet.js?key=511e4158-0aec-4e3c-b2e6-4daa1769f51e'></script>
+
+
+
+<link rel="stylesheet" media="all" href="https://cdn.qwiklabs.com/assets/application-0fbb2e2ec51da40239f1b54d7bd34aa50f59bc233036120124c2fb4e6c5fd90e.css" />
+<script>
+  EVENT_SOURCE_BASE_URL = "https://googlecoursera-run.qwiklabs.com/nchan-sub?id=";
+</script>
+<script src="https://cdn.qwiklabs.com/polyfills/webcomponents-loader.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/hallofmirrors/hallofmirrors-c8a543a8e9e63ffd57a2b2bb36bd5c342eaa604dffa0f1c63a43d84ccebe2d76.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.qwiklabs.com/assets/vendor-45d462772c30000424907184f70c7157e95fb6227698d1671c5051818a6f60d8.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/application-3fc70562de25b3405b5605bd7e10c53474b5c01cb26ae806a9f1c321050f4a1d.js"></script>
+</head>
+<body class='focuses focuses-show lab-show l-full no-nav'>
+<div class='header-container'>
+<div class='header'>
+<a class='mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect header__button header__button--nav header__nav-panel-button js-nav-toggle'>
+<i class='material-icons'>menu</i>
+</a>
+<div class='header__title'>
+<a class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--nav" href="https://www.coursera.org/"><ql-icon>arrow_back</ql-icon></a>
+
+<h1 class='headline-5'>
+Streaming Data Processing: Streaming Data Pipelines
+</h1>
+</div>
+<div class='header__actions'>
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--action header__button--search js-header-search-bar-button'>
+<i class='material-icons'>search</i>
+</a>
+<a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="toggle-lab-control-panel" href="javascript:;"><i class='material-icons'>description</i>
+</a><div class='mdl-tooltip js-tooltip' data-mdl-for='toggle-lab-control-panel'>
+Toggle Lab Panel
+</div>
+
+<ql-help context="lab" productdata="{&quot;userId&quot;:2485272}" data-analytics-action="opened_help" data-analytics-label="lab"></ql-help>
+<a class='header-my-account-button mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect js-my-account-button'>
+<img class="avatar " alt="avatar image" src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+</a>
+<div class='header-my-account-menu js-my-account-menu'>
+<div class='card elevation-2 no-padding'>
+<div class='my-account-menu__top'>
+<img class="avatar " alt="avatar image" src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+<div class='my-account-menu__info'>
+<h4 class='subtitle-headline-1'>
+Carlo André Castro Galindo
+</h4>
+<p class='body-2 text--gray'>
+<span>carlocastrogalindo@gmail.com</span>
+</p>
+<a class="button" href="/my_account/profile">My Account</a>
+</div>
+</div>
+<div class='my-account-menu__bottom'>
+<a class="text--green subtitle-headline-2" href="/my_account/credits">0 Credits
+</a><a data-analytics-action="clicked_sign_out" class="button button--hairline" rel="nofollow" data-method="delete" href="/users/sign_out">Sign Out</a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div class='header__search-bar js-header-search-bar'>
+<form id="catalog-search-mobile" onsubmit="ql.catalogSearchFilter(); return false;" action="/searches/elasticsearch" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="r5xKhLZQ777mHt4XakYJQBx7CqAgCoRx2hBQECQS5smxMFy07t1XVQPwOLUKCLb4kc3wLePQgf3gD6IlTGPeZg==" />
+<input type="text" name="keywords" id="keywords" placeholder="Search" maxlength="255" aria-label="catalog search bar" />
+</form>
+
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button'>
+<i class='material-icons'>close</i>
+</a>
+</div>
+</div>
+
+<nav class='nav-bar'>
+<a class="nav-bar__item js-navigation-button" href="/"><ql-icon class='nav-bar__item__icon'>
+home
+</ql-icon>
+<span class='nav-bar__item__label'>
+Home
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/catalog"><ql-icon class='nav-bar__item__icon'>
+school
+</ql-icon>
+<span class='nav-bar__item__label'>
+Catalog
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/my_learning"><ql-icon class='nav-bar__item__icon'>
+event_note
+</ql-icon>
+<span class='nav-bar__item__label'>
+My Learning
+</span>
+</a>
+</nav>
+
+<nav class='nav-panel js-nav-panel'>
+<div class='nav-panel__logo'>
+<div class='logo logo--blue'></div>
+</div>
+<a title="Home" tabindex="-1" class="nav-panel__item js-navigation-button" href="/"><ql-icon class='nav-panel__item__icon'>
+home
+</ql-icon>
+<div class='nav-panel__item__label'>
+Home
+</div>
+</a>
+<a title="Catalog" tabindex="-1" class="nav-panel__item js-navigation-button" href="/catalog"><ql-icon class='nav-panel__item__icon'>
+school
+</ql-icon>
+<div class='nav-panel__item__label'>
+Catalog
+</div>
+</a>
+<a title="My Learning" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_learning"><ql-icon class='nav-panel__item__icon'>
+event_note
+</ql-icon>
+<div class='nav-panel__item__label'>
+My Learning
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a title="Profile" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/profile"><ql-icon class='nav-panel__item__icon'>
+account_circle
+</ql-icon>
+<div class='nav-panel__item__label'>
+Profile
+</div>
+</a>
+<a title="Credits &amp; Subscriptions" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/credits"><ql-icon class='nav-panel__item__icon'>
+money
+</ql-icon>
+<div class='nav-panel__item__label'>
+Credits &amp; Subscriptions
+</div>
+</a>
+<a title="Security" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/security"><ql-icon class='nav-panel__item__icon'>
+security
+</ql-icon>
+<div class='nav-panel__item__label'>
+Security
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a class="nav-panel__item" tabindex="-1" href="#"><ql-help>
+<div class='nav-panel__help-item'>
+<ql-icon class='nav-panel__item__icon'>help</ql-icon>
+<div class='nav-panel__item__label'>Help</div>
+</div>
+</ql-help>
+</a><div class='nav-panel__small-links'>
+<a tabindex="-1" href="/privacy_policy">Privacy</a>
+<a tabindex="-1" href="/terms_of_service">Terms</a>
+</div>
+</nav>
+<div class='nav-panel__overlay js-nav-toggle'></div>
+
+<main class='js-main'>
+<span class='hidden' id='flash-sibling-before'></span>
+
+<div class='l-main-wrapper' id='main-wrapper'>
+
+
+
+
+
+
+
+<div class='js-lab-state' data-analytics-payload='{&quot;label&quot;:&quot;Streaming Data Processing: Streaming Data Pipelines&quot;,&quot;lab_name&quot;:&quot;Streaming Data Processing: Streaming Data Pipelines&quot;,&quot;classroom_name&quot;:null,&quot;deployment&quot;:&quot;googlecoursera-run&quot;}' data-focus-id='46797' data-lab-billing-limit='0.0' data-lab-duration='7200' data-parent='classroom'></div>
+<ql-lab-control-panel class='js-lab-control-panel l-lab-control-panel' connectionDetails='[]' connectionFiles='[]' labControlButton='{&quot;disabled&quot;:false,&quot;pending&quot;:false,&quot;running&quot;:false}' labTimer='{&quot;ticking&quot;:false,&quot;secondsRemaining&quot;:7200}' studentResources='[]'></ql-lab-control-panel>
+<div class='l-lab-main-body'>
+<div class='js-lab-content lab-content'>
+<div class='alert alert--fake js-alert'>
+<p class='alert__message js-alert-message'></p>
+<a class='alert__close js-alert-close'>
+<i class='fa fa-times'></i>
+</a>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-content__markdown-wrapper'>
+<div class='lab-preamble'>
+<h1 class='lab-preamble__title'>
+Streaming Data Processing: Streaming Data Pipelines
+</h1>
+<div class='lab-preamble__details subtitle-headline-1'>
+<span>2 hours </span>
+<span>1 Credit</span>
+<div class='lab__rating'>
+<a href="/focuses/46797/reviews?parent=catalog"><div class='rateit' data-rateit-readonly='true' data-rateit-value='4.1066'></div>
+
+</a><a data-target='#lab-review-modal' data-toggle='modal'>
+Rate Lab
+</a>
+</div>
+</div>
+</div>
+
+<div class='lab-content__inner-wrapper'>
+<div class='js-markdown-instructions lab-content__markdown markdown-lab-instructions' id='markdown-lab-instructions'>
+
+
+
+<h2 id="step1">Overview</h2>
+<p>In this lab, you will use Dataflow to collect traffic events from simulated traffic sensor data made available through Google Cloud PubSub, process them into an actionable average, and store the raw data in BigQuery for later analysis. You will learn how to start a Dataflow pipeline, monitor it, and, lastly, optimize it.</p>
+<aside class="warning"><p>At the time of this writing, streaming pipelines are not available in the DataFlow Python SDK. So the streaming labs are written in Java.</p>
+</aside>
+<h2 id="step2">Objectives</h2>
+<p>In this lab, you will perform the following tasks:</p>
+<ul>
+<li>
+<p>Launch Dataflow and run a Dataflow job</p>
+</li>
+<li>
+<p>Understand how data elements flow through the transformations of a Dataflow pipeline</p>
+</li>
+<li>
+<p>Connect Dataflow to Pub/Sub and BigQuery</p>
+</li>
+<li>
+<p>Observe and understand how Dataflow autoscaling adjusts compute resources to process input data optimally</p>
+</li>
+<li>
+<p>Learn where to find logging information created by Dataflow</p>
+</li>
+<li>
+<p>Explore metrics and create alerts and dashboards with Cloud Monitoring</p>
+</li>
+</ul>
+<h2 id="step3">Setup</h2>
+<h4>Before you click the Start Lab button</h4>
+<p>Read these instructions. Labs are timed and you cannot pause them. The timer, which starts when you click Start Lab, shows how long Cloud resources will be made available to you.</p>
+<p>This Qwiklabs hands-on lab lets you do the lab activities yourself in a real cloud environment, not in a simulation or demo environment. It does so by giving you new, temporary credentials that you use to sign in and access the Google Cloud Platform for the duration of the lab.</p>
+<h4>What you need</h4>
+<p>To complete this lab, you need:</p>
+<ul>
+<li>Access to a standard internet browser (Chrome browser recommended).</li>
+<li>Time to complete the lab.</li>
+</ul>
+<p><strong><em>Note:</em></strong> If you already have your own personal GCP account or project, do not use it for this lab.</p>
+
+<h2 id="step4">Task 1: Preparation</h2>
+<p>You will be running a sensor simulator from the training VM. In Lab 1 you manually setup the Pub/Sub components. In this lab several of those process are automated.</p>
+<h3>Open the SSH terminal and connect to the training VM</h3>
+<ol>
+<li>
+<p>In the Console, on the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Compute Engine</strong> &gt; <strong>VM instances</strong>.</p>
+</li>
+<li>
+<p>Locate the line with the instance called <strong>training-vm</strong>.</p>
+</li>
+<li>
+<p>On the far right, under <strong>Connect</strong>, click on <strong>SSH</strong> to open a terminal window.</p>
+</li>
+<li>
+<p>In this lab, you will enter CLI commands on the <strong>training-vm</strong>.</p>
+</li>
+</ol>
+<h3>Verify initialization is complete</h3>
+<ol start="5">
+<li>
+<p>The <strong>training-vm</strong> is installing software in the background. Verify that setup is complete by checking that the following directory exists. If it does not exist, wait a few minutes and try again.</p>
+</li>
+</ol>
+<pre><code>ls /training&#x000A;</code></pre>
+<p>Wait until setup is complete before proceeding. You can verify the installation of maven with <strong>mvn -version</strong> and the JDK with <strong>java -version</strong>.</p>
+<h3>Copy files</h3>
+<ol start="6">
+<li>
+<p>A repository has been downloaded to the VM. Copy the repository to your home directory.</p>
+</li>
+</ol>
+<pre><code>cp -r /training/training-data-analyst/ .&#x000A;</code></pre>
+<h3>Set environment variables</h3>
+<ol start="7">
+<li>
+<p>On the <strong>training-vm</strong> SSH terminal enter the following:</p>
+</li>
+</ol>
+<pre><code>source /training/project_env.sh&#x000A;</code></pre>
+<p>This script sets the __$$DEVSHELL_PROJECT_ID__ and __$$BUCKET__ environment variables.</p>
+<h2 id="step5">Task 2: Create a BigQuery Dataset and Cloud Storage Bucket</h2>
+<p>The Dataflow pipeline will be created later and will write into a table in this dataset.</p>
+<h2 id="step6">Create a BigQuery Dataset</h2>
+<h3>Open BigQuery Console</h3>
+<p>In the Google Cloud Console, select <strong>Navigation menu</strong> &gt; <strong>BigQuery</strong>:</p>
+<p><img alt="BigQuery_menu.png" src="https://cdn.qwiklabs.com/QwUX6algdXPgIThqBlgB2rnqGkoQUUANkl3xicD06uc%3D"></p>
+<p>The <strong>Welcome to BigQuery in the Cloud Console</strong> message box opens. This message box provides a link to the quickstart guide and lists UI updates.</p>
+<p>Click <strong>Done</strong>.</p>
+
+<p>In your BigQuery project, create a new dataset entitled <strong>demos</strong>.</p>
+<ol>
+<li>In the left pane in the <strong>Resources</strong> section, click on your BigQuery project (<code>qwiklabs-gcp-xxxx</code>).</li>
+<li>To the right, under the Query editor, click <strong>CREATE DATASET</strong>.</li>
+</ol>
+<p><img alt="5fce8105cf381420.png" src="https://cdn.qwiklabs.com/VLtojAawcq9BhGzT7Bu%2FQstCbmn1j3hglRUI0XZfZjM%3D"></p>
+<p>The <strong>Create dataset</strong> dialog opens.</p>
+<ol start="3">
+<li>Set the <em>Dataset ID</em> to <code>demos</code> and leave all other options at their default values.</li>
+<li>To finish, click the blue <strong>Create dataset</strong> button</li>
+</ol>
+<p><img alt="createdatasetdialog.png" src="https://cdn.qwiklabs.com/fQIGwuk9BwbpwSCtOa9LMYyNekq2X7ZgJoTlsMy9X3E%3D"></p>
+<h3>Verify the Cloud Storage Bucket</h3>
+<p>A bucket should already exist that has the same name as the Project ID.</p>
+<ol start="5">
+<li>In the Console, on the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Storage</strong> &gt; <strong>Browser</strong>.</li>
+<li>Observe the following values:</li>
+</ol>
+<table>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>Property</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><strong>Value</strong></p>
+<p>(type value or select option as specified)</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>Name</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><strong>&lt;Same as the Project ID&gt;</strong></p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>Default storage class</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><strong>[x] Regional</strong></p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>Location</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><strong>&lt;Your location&gt;</strong></p>
+</td>
+</tr>
+</table>
+<p>Click Check my progress to verify the objective.
+<ql-activity-tracking step="1">
+Create a BigQuery Dataset
+</ql-activity-tracking></p>
+<h2 id="step7">Task 3: Simulate traffic sensor data into Pub/Sub</h2>
+<ol>
+<li>
+<p>In the <strong>training-vm</strong> SSH terminal, start the sensor simulator. The script reads sample data from a csv file and publishes it to Pub/Sub.</p>
+</li>
+</ol>
+<pre><code>/training/sensor_magic.sh&#x000A;</code></pre>
+<p>This command will send 1 hour of data in 1 minute.  Let the script continue to run in the current terminal.</p>
+<h3>Open a second SSH terminal and connect to the training VM</h3>
+<ol start="2">
+<li>In the upper right corner of the <strong>training-vm</strong> SSH terminal, click on the gear-shaped button ( <img alt="9649d58acf1c4e06.png" src="https://cdn.qwiklabs.com/8PohZ1UPqyMVJD2%2BJxouC1NkYuEP%2BOWgiZHoYAB5yWg%3D">) and select <strong>New Connection to training-vm</strong> from the drop-down menu. A new terminal window will open.</li>
+</ol>
+<p><img alt="aaafeb5bff33d832.png" src="https://cdn.qwiklabs.com/Pb4RAOV%2BLzUZRpcmeeDpBB04sOdcDzZu8HpobIqjbGg%3D"></p>
+<ol start="3">
+<li>
+<p>The new terminal session will not have the required environment variables. Run the following command to set them.</p>
+</li>
+<li>
+<p>In the new <strong>training-vm</strong> SSH terminal enter the following:</p>
+</li>
+</ol>
+<pre><code>source /training/project_env.sh&#x000A;</code></pre>
+<h3>View subscriptions</h3>
+<ol start="5">
+<li>In the Console, on the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Pub/Sub</strong> &gt; <strong>Topics</strong>.</li>
+<li>Examine the line for <strong>Topic name</strong> for the topic <strong>sandiego</strong>. Notice that <strong>Subscriptions</strong> are currently at 0.</li>
+</ol>
+<p>Click Check my progress to verify the objective.
+<ql-activity-tracking step="2">
+Simulate traffic sensor data into Pub/Sub
+</ql-activity-tracking></p>
+<h2 id="step8">Task 4: Launch Dataflow Pipeline</h2>
+<h3>Verify that Google Cloud Dataflow API is enabled for this project</h3>
+<ol>
+<li>
+<p>Return to the browser tab for Console. In the top search bar, enter <strong>Dataflow API</strong>. This will take you to the page, <strong>Navigation menu &gt; APIs &amp; Services &gt; Dashboard &gt; Google Dataflow API</strong>. It will either show a status information or it will give you the option to <strong>Enable</strong> the API.</p>
+</li>
+<li>
+<p>If necessary, <strong>Enable</strong> the API.</p>
+</li>
+<li>
+<p>Return to the second <strong>training-vm</strong> SSH terminal. Change into the directory for this lab.</p>
+</li>
+</ol>
+<pre><code>cd ~/training-data-analyst/courses/streaming/process/sandiego&#x000A;</code></pre>
+<ol start="4">
+<li>
+<p>Identify the script that creates and runs the Dataflow pipeline.</p>
+</li>
+</ol>
+<pre><code>cat run_oncloud.sh&#x000A;</code></pre>
+<ol start="5">
+<li>
+<p>Copy-and-paste the following URL into a new browser tab to view the source code on Github.</p>
+</li>
+</ol>
+<pre><code>https://github.com/GoogleCloudPlatform/training-data-analyst/blob/master/courses/streaming/process/sandiego/run_oncloud.sh&#x000A;</code></pre>
+<ol start="6">
+<li>The script requires three arguments: <strong>project id</strong>, <strong>bucket name</strong>, <strong>classname</strong>
+</li>
+</ol>
+<p>A 4th optional argument is <strong>options</strong>. The <strong>options</strong> argument in discussed later in this lab.</p>
+<table>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>project id</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><code>&lt;your Project ID&gt;</code></p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>bucket name</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><code>&lt;your Bucket Name&gt;</code></p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>classname</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><code>&lt;java file that runs aggregations&gt;</code></p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>options</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><code>&lt;options&gt;</code></p>
+</td>
+</tr>
+</table>
+<p>There are 4 java files that you can choose from for <strong>classname</strong>.  Each reads the traffic data from Pub/Sub and runs different aggregations/computations.</p>
+<ol start="7">
+<li>
+<p>Go into the java directory. Identify the source file <strong>AverageSpeeds.java</strong>.</p>
+</li>
+</ol>
+<pre><code>cd ~/training-data-analyst/courses/streaming/process/sandiego/src/main/java/com/google/cloud/training/dataanalyst/sandiego&#x000A;&#x000A;cat AverageSpeeds.java&#x000A;</code></pre>
+<p>What does the script do?</p>
+<p>Close the file to continue. You will want to refer to this source code while running the application. So for easy access you will open a new browser tab and view the file <strong>AverageSpeeds.java</strong> on Github.</p>
+<ol start="8">
+<li>
+<p>Copy-and-paste the following URL into a browser tab to view the source code on Github.</p>
+</li>
+</ol>
+<pre><code>https://github.com/GoogleCloudPlatform/training-data-analyst/blob/master/courses/streaming/process/sandiego/src/main/java/com/google/cloud/training/dataanalyst/sandiego/AverageSpeeds.java&#x000A;</code></pre>
+<p>Leave this browser tab open. You will be referring back to the source code in a later step in this lab.</p>
+<ol start="9">
+<li>
+<p>Return to the <strong>training-vm</strong> SSH terminal. Run the Dataflow pipeline to read from PubSub and write into BigQuery.</p>
+</li>
+</ol>
+<pre><code>cd ~/training-data-analyst/courses/streaming/process/sandiego&#x000A;&#x000A;./run_oncloud.sh $DEVSHELL_PROJECT_ID $BUCKET AverageSpeeds&#x000A;</code></pre>
+<p>This script uses maven to build a Dataflow streaming pipeline in Java.</p>
+<p>Example successful completion:</p>
+<pre><code class="language-bash prettyprint">[INFO] ------------------------------------------------------------------------&#x000A;[INFO] BUILD SUCCESS&#x000A;[INFO] ------------------------------------------------------------------------&#x000A;[INFO] Total time: 45.542 s&#x000A;[INFO] Finished at: 2018-06-08T16:51:30+00:00&#x000A;[INFO] Final Memory: 56M/216M&#x000A;[INFO] ------------------------------------------------------------------------&#x000A;</code></pre>
+<p>Click Check my progress to verify the objective.
+<ql-activity-tracking step="3">
+Launch Dataflow Pipeline
+</ql-activity-tracking></p>
+<h2 id="step9">Task 5: Explore the pipeline</h2>
+<p>This Dataflow pipeline reads messages from a Pub/Sub topic, parses the JSON of the input message, produces one main output and writes to BigQuery.</p>
+<ol>
+<li>Return to the browser tab for Console. On the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Dataflow</strong> and click on your job to monitor progress.</li>
+</ol>
+<p>Example:</p>
+<p><img alt="1540d0eba03f0a0a.png" src="https://cdn.qwiklabs.com/5tVtB953BMyju7QibzMmH6S%2FwN29CBAwD9X2wEgEqEc%3D"></p>
+<ol start="2">
+<li>After the pipeline is running, click on the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Pub/Sub</strong> &gt; <strong>Topics</strong>.</li>
+<li>Examine the line for <strong>Topic name</strong> for the topic <strong>sandiego</strong>. Notice that <strong>Subscriptions</strong> field is now at 1.</li>
+</ol>
+<p>Example:</p>
+<p><img alt="a52cd9a54fc0e6ec.png" src="https://cdn.qwiklabs.com/wHBVgVVKGPFCreEMKD9j4dLiTTGF2FV8K9ivV6VqlF4%3D"></p>
+<ol start="4">
+<li>
+<p>Return to the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Dataflow</strong> and click on your job.</p>
+</li>
+<li>
+<p>Compare the code in the Github browser tab, <strong>AverageSpeeds.java</strong> and the pipeline graph in the page for your Dataflow job.</p>
+</li>
+<li>
+<p>Find the <strong>GetMessages</strong> pipeline step in the graph, and then find the corresponding code in the <strong>AverageSpeeds.java</strong> file. This is the pipeline step that reads from the Pub/Sub topic. It creates a collection of Strings - which corresponds to Pub/Sub messages that have been read.</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>Do you see a subscription created?</p>
+</li>
+<li>
+<p>How does the code pull messages from Pub/Sub?</p>
+</li>
+</ul>
+<ol start="7">
+<li>
+<p>Find the <strong>Time Window</strong> pipeline step in the graph and in code. In this pipeline step we create a window of a duration specified in the pipeline parameters (sliding window in this case). This window will accumulate the traffic data from the previous step until end of window, and pass it to the next steps for further transforms.</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>What is the window interval?</p>
+</li>
+<li>
+<p>How often is a new window created?</p>
+</li>
+</ul>
+<ol start="8">
+<li>
+<p>Find the <strong>BySensor</strong> and <strong>AvgBySensor</strong> pipeline steps in the graph, and then find the corresponding code snippet in the AverageSpeeds.java file. This <strong>BySensor</strong> does a grouping of all events in the window by sensor id, while <strong>AvgBySensor</strong> will then compute the mean speed for each grouping.</p>
+</li>
+<li>
+<p>Find the <strong>ToBQRow</strong> pipeline step in the graph and in code. This step simply creates a "row" with the average computed from previous step together with the lane information.</p>
+</li>
+</ol>
+<aside class="special"><p>In practice, other actions could be taken in the <strong>ToBQRow</strong> step. For example, it could compare the calculated mean against a predefined threshold and log the results of the comparison in Cloud Logging. </p>
+</aside>
+<ol start="10">
+<li>Find the <strong>BigQueryIO.Write</strong> in both the pipeline graph and in the source code. This step writes the row out of the pipeline into a BigQuery table. Because we chose the <strong>WriteDisposition.WRITE_APPEND</strong> write disposition, new records will be appended to the table.</li>
+<li>Return to the BigQuery web UI tab. Refresh your browser.</li>
+<li>Find your project name and the demos dataset you created. The small arrow to the left of the dataset name <strong>demos</strong> should now be active and clicking on it will reveal the  <strong>average_speeds</strong> table.</li>
+</ol>
+<p>Example:</p>
+<p><img alt="averagespeeds.png" src="https://cdn.qwiklabs.com/AQ%2F6RAXQQLidJi%2BGJ976MrpD9DeIDJbo%2F4IbbTUCwbk%3D"></p>
+<h2 id="step10">Task 6: Determine throughput rates</h2>
+<p>One common activity when monitoring and improving Dataflow pipelines is figuring out how many elements the pipeline processes per second, what the system lag is, and how many data elements have been processed so far. In this activity you will learn where in the Cloud Console one can find information about processed elements and time.</p>
+<ol>
+<li>
+<p>Return to the browser tab for Console. On the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Dataflow</strong> and click on your job to monitor progress (it will have your username in the pipeline name).</p>
+</li>
+<li>
+<p>Select the <strong>GetMessages</strong> pipeline node in the graph and look at the step metrics on the right.</p>
+</li>
+</ol>
+<ul>
+<li>
+<p><strong>System Lag</strong> is an important metric for streaming pipelines. It represents the amount of time data elements are waiting to be processed since they "arrived" in the input of the transformation step.</p>
+</li>
+<li>
+<p><strong>Elements Added</strong> metric under output collections tells you how many data elements exited this step (for the <strong>Read PubSub Msg</strong> step of the pipeline it also represents the number of Pub/Sub messages read from the topic by the Pub/Sub IO connector).</p>
+</li>
+</ul>
+<ol start="3">
+<li>
+<p>Select the <strong>Time Window</strong> node in the graph. Observe how the Elements Added metric under the Input Collections of the <strong>Time Window</strong> step matches the Elements Added metric under the Output Collections of the previous step <strong>GetMessages</strong>.</p>
+</li>
+</ol>
+<h2 id="step11">Task 7: Review BigQuery output</h2>
+<ol>
+<li>Return to the BigQuery web UI.</li>
+</ol>
+<aside class="special"><p>Streaming data and tables may not show up immediately, and the Preview feature may not be available for data that is still in the streaming buffer. If you click on <strong>Preview</strong> you will see the message "This table has records in the streaming buffer that may not be visible in the preview." You can still run queries to view the data.</p>
+</aside>
+<ol start="2">
+<li>
+<p>In the <strong>Query editor</strong> window, type (or copy-and-paste) the following query. Use the following query to observe the output from the Dataflow job.  Click <strong>Run</strong>.</p>
+</li>
+</ol>
+<pre><code class="language-sql prettyprint">SELECT *&#x000A;FROM `demos.average_speeds`&#x000A;ORDER BY timestamp DESC&#x000A;LIMIT 100&#x000A;</code></pre>
+<ol start="3">
+<li>
+<p>Find the last update to the table by running the following SQL.</p>
+</li>
+</ol>
+<pre><code class="language-sql prettyprint">SELECT&#x000A;MAX(timestamp)&#x000A;FROM&#x000A;`demos.average_speeds`&#x000A;</code></pre>
+<ol start="4">
+<li>Next use the time travel capability of BigQuery to reference the state of the table at a previous point in time.</li>
+</ol>
+<p>The query below will return a subset of rows from the <strong>average_speeds</strong> table that existed at 10 minutes ago.  If your query requests rows but the table did not exist at the reference point in time, you will receive the following error message:  "<strong>Not found: Table PROJECT:DATASET.TABLE was not found in location XX</strong>".  If you encounter this error please reduce the scope of your time travel by lowering the minute value.</p>
+<pre><code class="language-sql prettyprint">SELECT *&#x000A;FROM `demos.average_speeds`&#x000A;FOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 10 MINUTE)&#x000A;ORDER BY timestamp DESC&#x000A;LIMIT 100&#x000A;</code></pre>
+<h2 id="step12">Task 8: Observe and understand autoscaling</h2>
+<p>Observe how Dataflow scales the number of workers to process the backlog of incoming Pub/Sub messages.</p>
+<ol>
+<li>
+<p>Return to the browser tab for Console. On the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Dataflow</strong> and click on your pipeline job.</p>
+</li>
+<li>
+<p>Examine the <strong>Job summary</strong> panel on the right, and review the <strong>Autoscaling</strong> section. How many workers are currently being used to process messages in the Pub/Sub topic?</p>
+</li>
+<li>
+<p>Click on <strong>See more history</strong> and review how many workers were used at different points in time during pipeline execution.</p>
+</li>
+<li>
+<p>The data from a traffic sensor simulator started at the beginning of the lab creates hundreds of messages per second in the Pub/Sub topic.  This will cause Dataflow to increase the number of workers to keep the system lag of the pipeline at optimal levels.</p>
+</li>
+<li>
+<p>Click on <strong>See more history</strong>. In the <strong>Worker History</strong> pop-up, you can see how Dataflow changed the number of workers. Notice the <strong>Rationale</strong> column that explains the reason for the change.</p>
+</li>
+</ol>
+<h2 id="step13">Task 9: Refresh the sensor data simulation script</h2>
+<aside class="warning"><p>The training lab environment has quota limits. If the sensor data simulation script runs too long it will pass a quota limit, causing the session credentials to be suspended.</p>
+</aside>
+<ol>
+<li>
+<p>Return to the <strong>training-vm</strong> SSH terminal where the sensor data is script is running.</p>
+</li>
+<li>
+<p>If you see messages that say <strong>INFO: Publishing</strong> then the script is still running. Press <strong>CRTL+C</strong> to stop it. Then issue the command to start the script again.</p>
+</li>
+</ol>
+<pre><code>cd ~/training-data-analyst/courses/streaming/publish&#x000A;&#x000A;./send_sensor_data.py --speedFactor=60 --project $DEVSHELL_PROJECT_ID&#x000A;</code></pre>
+<ol start="3">
+<li>
+<p>If the script has passed the quota limit, you will see repeating error messages that "credentials could not be refreshed" and you may not be able to use <strong>CTRL+C</strong> to stop the script.  Simply close the SSH terminal. Open a new SSH terminal. The new session will have a fresh quota.</p>
+</li>
+<li>
+<p>In the Console, on the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Compute Engine</strong> &gt; <strong>VM instances</strong>.</p>
+</li>
+<li>
+<p>Locate the line with the instance called <strong>training-vm</strong>.</p>
+</li>
+<li>
+<p>On the far right, under <strong>Connect</strong>, click on <strong>SSH</strong> to open a third terminal window.</p>
+</li>
+<li>
+<p>In the <strong>training-vm</strong> SSH terminal, enter the following to create environment variables.</p>
+</li>
+</ol>
+<pre><code>source /training/project_env.sh&#x000A;</code></pre>
+<ol start="8">
+<li>
+<p>Use the following commands to start a new sensor simulator.</p>
+</li>
+</ol>
+<pre><code>cd ~/training-data-analyst/courses/streaming/publish&#x000A;&#x000A;./send_sensor_data.py --speedFactor=60 --project $DEVSHELL_PROJECT_ID&#x000A;</code></pre>
+<h2 id="step14">Task 10: Cloud Monitoring integration</h2>
+<p>Cloud Monitoring integration with Dataflow allows users to access Dataflow job metrics such as System Lag (for streaming jobs), Job Status (Failed, Successful), Element Counts, and User Counters from within Cloud Monitoring.</p>
+<h3>Integration features of Cloud Monitoring</h3>
+<ul>
+<li>
+<strong>Explore Dataflow Metrics</strong>: Browse through available Dataflow pipeline metrics and visualize them in charts.</li>
+</ul>
+<p>Some common Dataflow metrics.</p>
+<table>
+
+<tr>
+<th>Metrics</th>
+<th>Features</th>
+</tr>
+
+
+<tr>
+<td><strong>Job status</strong></td>
+<td>Job status (Failed, Successful), reported as an enum every 30 secs and on update.</td>
+</tr>
+<tr>
+<td><strong>Elapsed time</strong></td>
+<td>Job elapsed time (measured in seconds), reported every 30 secs.</td>
+</tr>
+<tr>
+<td><strong>System lag</strong></td>
+<td>Max lag across the entire pipeline, reported in seconds.</td>
+</tr>
+<tr>
+<td><strong>Current vCPU count</strong></td>
+<td>Current # of virtual CPUs used by job and updated on value change.</td>
+</tr>
+<tr>
+<td><strong>Estimated byte count</strong></td>
+<td>Number of bytes processed per PCollection.</td>
+</tr>
+
+</table>
+<ul>
+<li>
+<p><strong>Chart Dataflow metrics in Monitoring Dashboards</strong>: Create Dashboards and chart time series of Dataflow metrics.</p>
+</li>
+<li>
+<p><strong>Configure Alerts</strong>: Define thresholds on job or resource group-level metrics and alert when these metrics reach specified values. Monitoring alert can notify on a variety of conditions such as long streaming system lag or failed jobs.</p>
+</li>
+<li>
+<p><strong>Monitor User-Defined Metrics</strong>: In addition to Dataflow metrics, Dataflow exposes user-defined metrics (SDK Aggregators) as Monitoring custom counters in the Monitoring UI, available for charting and alerting. Any Aggregator defined in a Dataflow pipeline will be reported to Monitoring as a custom metric. Dataflow will define a new custom metric on behalf of the user and report incremental updates to Monitoring approximately every 30 seconds.</p>
+</li>
+</ul>
+<h2 id="step15">Task 11: Explore metrics</h2>
+<p>Cloud monitoring is a separate service in Google Cloud Platform. So you will need to go through some setup steps to initialize the service for your lab account.</p>
+<h3>Create a Monitoring workspace</h3>
+<p>You will now setup a Monitoring workspace that's tied to your Qwiklabs GCP Project. The following steps create a new account that has a free trial of Monitoring.</p>
+<ol>
+<li>
+<p>In the Google Cloud Platform Console, click on <strong>Navigation menu</strong> &gt; <strong>Monitoring</strong>.</p>
+</li>
+<li>
+<p>Wait for your workspace to be provisioned.</p>
+</li>
+</ol>
+<p>When the Monitoring dashboard opens, your workspace is ready.</p>
+<p><img alt="monitoring_overview.png" src="https://cdn.qwiklabs.com/wPdo15Q%2FnKRdSOQjFVSuSTQDUHLTxJMbVzynZNqk7GY%3D"></p>
+
+<ol start="3">
+<li>In the panel to the left click on <strong>Metrics Explorer</strong>.</li>
+<li>In the Metrics Explorer, find and select the <strong>Dataflow_job</strong> resource type. You should see a list of available Dataflow-related metrics.</li>
+</ol>
+<p><img alt="5eb4e8a59b5430c9.png" src="https://cdn.qwiklabs.com/%2F%2Fv2%2BxxufjrcRNWq8TFX5OALylagQcddzvVkbaDMTWc%3D"></p>
+<ol start="5">
+<li>Select the resource <strong>Dataflow Job</strong> and the metric <strong>Data watermark lag</strong>.</li>
+<li>Cloud monitoring will draw a graph on the right side of the page.</li>
+<li>Under Find resource type and metric, click on the <strong>(x)</strong> to remove the <strong>Data watermark lag</strong> metric. Select a new metric, <strong>System Lag</strong>.</li>
+</ol>
+<ql-infobox><p>The metrics that Dataflow provides to Monitoring are listed here:</p>
+<p><a href="https://cloud.google.com/monitoring/api/metrics_gcp" target="blank">https://cloud.google.com/monitoring/api/metrics_gcp</a> </p>
+<p>(Search on the page for Dataflow). </p>
+<p>The metrics you have viewed are useful indicators of pipeline performance.</p>
+<p><strong>Data watermark lag:</strong> The age (time since event timestamp) of the most recent item of data that has been fully processed by the pipeline.</p>
+<p><strong>System lag: </strong>The current maximum duration that an item of data has been awaiting processing, in seconds.</p>
+</ql-infobox>
+<h2 id="step16">Task 12: Create alerts</h2>
+<p>If you want to be notified when a certain metric crosses a specified threshold (for example, when System Lag of our lab streaming pipeline increases above a predefined value), you could use the Alerting mechanisms of Monitoring to accomplish that.</p>
+<h3>Create an alert</h3>
+<ol>
+<li>
+<p>On the Cloud Monitoring, click <strong>Alerting</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Create Policy</strong>.</p>
+</li>
+<li>
+<p>Give the policy a name such as <strong>MyAlertPolicy</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Add Condition</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Target</strong> section, set the <strong>RESOURCE TYPE</strong> to <strong>Dataflow Job</strong>.</p>
+</li>
+<li>
+<p>Set the <strong>Metric</strong> to <strong>System Lag</strong>.</p>
+</li>
+<li>
+<p>Set <strong>CONDITION</strong> to <strong>is above</strong>.</p>
+</li>
+<li>
+<p>Set <strong>THRESHOLD</strong> to <strong>5</strong>.</p>
+</li>
+<li>
+<p>Set <strong>FOR</strong> to <strong>1 minute</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Add</strong>.</p>
+</li>
+</ol>
+<h3>Add a notification</h3>
+<ol start="11">
+<li>Under <strong>Notifications</strong> section, click <strong>Add Notification Channel</strong>.</li>
+<li>Select <strong>Email</strong> for <strong>Notification Channel Type</strong>.</li>
+<li>Enter the Qwiklabs username as the email address.</li>
+</ol>
+<ql-warningbox>If you enter your own email address, you might get alerts until all the resources in the project have been deleted.</ql-warningbox>
+<ol start="14">
+<li>
+<p>Click <strong>Add</strong>.</p>
+</li>
+<li>
+<p>Skip the Documentation step.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h3>View events</h3>
+<ol start="17">
+<li>On the Cloud Monitoring tab, click on <strong>Alerting &gt; Events</strong>.</li>
+<li>Every time an alert is triggered by a Metric Threshold condition, an Incident and a corresponding Event are created in Monitoring. If you specified a notification mechanism in the alert (email, SMS, pager, etc), you will also receive a notification.</li>
+</ol>
+<p>Click Check my progress to verify the objective.
+<ql-activity-tracking step="4">
+Create an alert
+</ql-activity-tracking></p>
+<h2 id="step17">Task 13: Set up dashboards</h2>
+<p>You can easily build dashboards with the most relevant Dataflow-related charts with Cloud Monitoring Dashboards.</p>
+<ol>
+<li>In the left pane, click  <strong>Dashboards</strong> &gt; <strong>Create Dashboard</strong>.</li>
+<li>For <strong>New Dashboard Name</strong>, type <strong>My Dashboard</strong>, and press <strong>Confirm</strong>.</li>
+<li>Click <strong>Add Chart</strong>.</li>
+<li>On the Add Chart page:</li>
+<li>In the <strong>Find resource type and metric</strong> box, start typing <strong>Dataflow Job</strong> and then select it as the Resource Type.</li>
+<li>After you select a Resource Type, the Metric field menu will appear. Select a metric to chart, such as <strong>System Lag</strong>.</li>
+<li>In the <strong>Filter</strong> panel, select <strong>project_id</strong>, then select or enter your project in the <strong>Value</strong> field and then click <strong>Apply</strong>.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<p>Example:</p>
+<p><img alt="ad665cd6a43d2ffd.png" src="https://cdn.qwiklabs.com/jjgfiW6HWhrI3xxhSvEt4LvjMZIjKJhghpAx87XVv0o%3D"></p>
+<p>You can add more charts to the dashboard, if you would like, for example, Pub/Sub publish rates on the topic, or subscription backlog (which is a signal to the Dataflow auto-scaler).</p>
+<h2 id="step18">Task 14: Launch another streaming pipeline</h2>
+<ol>
+<li>
+<p>In the <strong>training-vm</strong> SSH terminal, examine the <strong>CurrentConditions.java</strong> application. <strong>Do not make any changes to the code.</strong></p>
+</li>
+</ol>
+<pre><code>cd ~/training-data-analyst/courses/streaming/process/sandiego/src/main/java/com/google/cloud/training/dataanalyst/sandiego&#x000A;&#x000A;cat CurrentConditions.java&#x000A;</code></pre>
+<ol start="2">
+<li>
+<p>Copy-and-paste the following URL into a browser tab to view the source code on Github.</p>
+</li>
+</ol>
+<pre><code>https://github.com/GoogleCloudPlatform/training-data-analyst/blob/master/courses/streaming/process/sandiego/src/main/java/com/google/cloud/training/dataanalyst/sandiego/CurrentConditions.java&#x000A;</code></pre>
+<p>What does the script do?</p>
+<ol start="3">
+<li>
+<p>Run the <strong>CurrentConditions.java</strong> code in a new Dataflow pipeline; this script is simpler in the sense that it does not do many transforms like <strong>AverageSpeeds</strong>. The results will be used in the next lab to build dashboards and run some transforms (functions) while retrieving data from BigQuery.</p>
+</li>
+<li>
+<p>In the <strong>training-vm</strong> SSH terminal, enter the following:</p>
+</li>
+</ol>
+<pre><code>cd ~/training-data-analyst/courses/streaming/process/sandiego&#x000A;&#x000A;./run_oncloud.sh $DEVSHELL_PROJECT_ID $BUCKET CurrentConditions&#x000A;</code></pre>
+<ol start="5">
+<li>Return to the browser tab for Console. On the <strong>Navigation menu</strong> ( <img alt="7a91d354499ac9f1.png" src="https://cdn.qwiklabs.com/ITyhQn00xPCVZIksELAC4wax%2BQdPdrH2DNGLazXJKgw%3D">), click <strong>Dataflow</strong> and click on the new pipeline job. Confirm that the pipeline job is listed and verify that it is running without errors.</li>
+<li>It will take several minutes before the <strong>current_conditions</strong> table appears in BigQuery.</li>
+</ol>
+<p>Click Check my progress to verify the objective.
+<ql-activity-tracking step="5">
+Launch another streaming pipeline
+</ql-activity-tracking></p>
+<h2 id="step19">End your lab</h2>
+<p>When you have completed your lab, click <strong>End Lab</strong>. Qwiklabs removes the resources you’ve used and cleans the account for you.</p>
+<p>You will be given an opportunity to rate the lab experience. Select the applicable number of stars, type a comment, and then click <strong>Submit</strong>.</p>
+<p>The number of stars indicates the following:</p>
+<ul>
+<li>1 star = Very dissatisfied</li>
+<li>2 stars = Dissatisfied</li>
+<li>3 stars = Neutral</li>
+<li>4 stars = Satisfied</li>
+<li>5 stars = Very satisfied</li>
+</ul>
+<p>You can close the dialog box if you don't want to provide feedback.</p>
+<p>For feedback, suggestions, or corrections, please use the <strong>Support</strong> tab.</p>
+
+<p>Manual Last Updated: April 7, 2020</p>
+<p>Lab Last Tested: April 7, 2020</p>
+<p>Copyright 2019 Google LLC All rights reserved. Google and the Google logo are trademarks of Google LLC. All other company and product names may be trademarks of the respective companies with which they are associated.</p>
+
+
+
+</div>
+<div class='js-lab-content-outline lab-content__outline'>
+<a href='#step1'>Overview</a><a href='#step2'>Objectives</a><a href='#step3'>Setup</a><a href='#step4'>Task 1: Preparation</a><a href='#step5'>Task 2: Create a BigQuery Dataset and Cloud Storage Bucket</a><a href='#step6'>Create a BigQuery Dataset</a><a href='#step7'>Task 3: Simulate traffic sensor data into Pub/Sub</a><a href='#step8'>Task 4: Launch Dataflow Pipeline</a><a href='#step9'>Task 5: Explore the pipeline</a><a href='#step10'>Task 6: Determine throughput rates</a><a href='#step11'>Task 7: Review BigQuery output</a><a href='#step12'>Task 8: Observe and understand autoscaling</a><a href='#step13'>Task 9: Refresh the sensor data simulation script</a><a href='#step14'>Task 10: Cloud Monitoring integration</a><a href='#step15'>Task 11: Explore metrics</a><a href='#step16'>Task 12: Create alerts</a><a href='#step17'>Task 13: Set up dashboards</a><a href='#step18'>Task 14: Launch another streaming pipeline</a><a href='#step19'>End your lab</a>
+</div>
+</div>
+
+</div>
+
+
+</div>
+</div>
+<div class='lab-assessment__tab js-lab-assessment-tab'>
+<h5 class='small-label'>
+Score
+</h5>
+<h3 class='js-lab-assessment-total-score'>
+&mdash;/25
+</h3>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-assessment__panel js-lab-assessment-panel'>
+<!-- / If lab_instance has is started and assessment is generated, use -->
+<!-- / lab_instance.assessment, otherwise use lab.assessment_manual -->
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Create a BigQuery Dataset
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='1'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-1'>
+</span>
+/ 5
+</p>
+</div>
+
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Simulate traffic sensor data into Pub/Sub
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='2'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-2'>
+</span>
+/ 5
+</p>
+</div>
+
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Launch Dataflow Pipeline
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='3'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-3'>
+</span>
+/ 5
+</p>
+</div>
+
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Create an alert
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='4'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-4'>
+</span>
+/ 5
+</p>
+</div>
+
+<div class='lab-assessment__step'>
+<p class='lab-assessment__step__title'>
+Launch another streaming pipeline
+</p>
+<p class='button button--assessment js-show-run-step-button' step_no='5'>
+Run Step
+</p>
+<p class='lab-assessment__step__score'>
+<span class='js-assessment-step-score-5'>
+</span>
+/ 5
+</p>
+</div>
+
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-introduction js-lab-introduction is-hidden'>
+<div class='lab-introduction__inner'>
+<h1 class='headline-1'>Welcome to Your First Lab!</h1>
+<ql-icon-button class='js-skip-button'>close</ql-icon-button>
+<div class='lab-introduction__video'>
+<iframe allow='autoplay; encrypted-media' allowfullscreen frameborder='0' id='lab-introduction' src='https://www.youtube.com/embed/yF7EDXKTmoQ?enablejsapi=1&amp;rel=0&amp;showinfo=0'></iframe>
+</div>
+<a class='js-skip-button button button--outline'>Skip this video</a>
+</div>
+</div>
+
+
+
+</div>
+</main>
+<div class='modal fade' id='lab-details-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<div class='modal-body'>
+<p class='l-mbm'>
+Streaming Data Processing: Streaming Data Pipelines
+</p>
+<p class='small-label l-mbs'>
+<strong>
+Duration:
+</strong>
+0m setup
+&middot;
+120m access
+&middot;
+120m completion
+</p>
+<p class='small-label l-mbs'>
+<span><strong>Levels: </strong>fundamental</span>
+</p>
+<p class='small-label'>
+<strong>
+Permalink:
+</strong>
+<a href="https://googlecoursera.qwiklabs.com/catalog_lab/2187">https://googlecoursera.qwiklabs.com/catalog_lab/2187</a>
+</p>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Got It
+</a>
+</div>
+
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='modal fade' id='lab-review-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<form class="simple_form js-lab-review-form" id="edit_lab_review_5043031" action="/lab_reviews/5043031" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="_method" value="patch" /><div class='modal-body'>
+<p class='label'>
+How satisfied are you with this lab?*
+</p>
+<div class='rateit js-rateit' data-rateit-max='5' data-rateit-min='0' data-rateit-resetable='false' data-rateit-step='1' data-rateit-value='5'></div>
+<div class='l-mtm'>
+
+<div class="control-group hidden lab_review_user_id"><div class="controls"><input class="hidden" type="hidden" value="2485272" name="lab_review[user_id]" id="lab_review_user_id" /></div></div>
+<div class="control-group hidden lab_review_classroom_id"><div class="controls"><input class="hidden" type="hidden" value="5978" name="lab_review[classroom_id]" id="lab_review_classroom_id" /></div></div>
+<div class="control-group hidden lab_review_lab_id"><div class="controls"><input class="hidden" type="hidden" value="2187" name="lab_review[lab_id]" id="lab_review_lab_id" /></div></div>
+<div class="control-group hidden lab_review_focus_id"><div class="controls"><input class="hidden" type="hidden" value="46797" name="lab_review[focus_id]" id="lab_review_focus_id" /></div></div>
+<div class="control-group hidden lab_review_rating"><div class="controls"><input class="hidden js-rating-input" type="hidden" value="2" name="lab_review[rating]" id="lab_review_rating" /></div></div>
+<div class="control-group text optional lab_review_comment"><label class="text optional control-label" for="lab_review_comment">Comment</label><div class="controls"><textarea class="text optional" name="lab_review[comment]" id="lab_review_comment">
+</textarea></div></div>
+</div>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Cancel
+</a>
+<input type="submit" name="commit" value="Submit" disabled="disabled" class="btn mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" id="submit" data-disabled="false" data-disable-with="Submit" />
+</div>
+</form>
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+
+<script>
+  $( function() {
+    ql.initMaterialInputs();
+    initChosen();
+    initSearch();
+    initTabs();
+    ql.list.init();
+    ql.favoriting.init();
+    ql.header.myAccount.init();
+    initTooltips();
+    ql.autocomplete.init();
+    ql.modals.init();
+    ql.toggleButtons.init();
+    ql.analytics.init();
+    initLabContent( );
+  ql.labOutline.links.init();
+  ql.labOutline.layout.init();
+  initLabReviewModal();
+  ql.labAssessment.init();
+  ql.labIntroduction.init( true );
+  ql.labData.init();
+  initLabTranslations( {"are_you_sure":"All done? If you end this lab, you will lose all your work. You may not be able to restart the lab if there is a quota limit. Are you sure you want to end this lab?\n","in_progress":"*In Progress*","ending":"*Ending*","starting":"*Starting, please wait*","end_concurrent_labs":"Sorry, you can only run one lab at a time. To start this lab, please confirm that you want all of your existing labs to end.\n","copied":"Copied","no_resource":"Error retrieving resource.","no_support":"No Support","mac_press":"Press ⌘-C to copy","thanks_review":"Thanks for reviewing this lab.","windows_press":"Press Ctrl-C to copy","days":"days"} );
+  ql.labRun.init();
+  ql.initHeader();
+  ql.navigation.init();
+  ql.navPanel.init();
+  ql.navigation.init();
+  
+  });
+</script>
+<style>
+  .mdl-layout__container {
+    position: static
+  }
+</style>
+</body>
+</html>

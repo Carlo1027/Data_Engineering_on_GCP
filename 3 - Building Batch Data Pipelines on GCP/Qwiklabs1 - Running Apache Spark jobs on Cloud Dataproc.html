@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta content='[]' name='active-experiments'>
+<meta content='{&quot;userId&quot;:2485272}' name='help-api-product-data'>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="Bl6f8+6FaCUEPVyNIZoNwK8HQVmyvpyh3+lsF6WJbOQHeOOSzmdy/pIZ702EYR1M2grOUli/MzGX2R8R9MrrQw==" />
+<title>Running Apache Spark jobs on Cloud Dataproc | Qwiklabs</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0' name='viewport'>
+<meta content='This lab focuses on running Apache Spark jobs on Cloud Dataproc.' name='description'>
+<meta content='Qwiklabs' name='author'>
+<meta content='1rRsY0INj8RvwB5EF5pwdxt2A2P9aDgAlsICaJ0d5w0' name='google-site-verification'>
+<meta content='Running Apache Spark jobs on Cloud Dataproc | Qwiklabs' property='og:title'>
+<meta content='website' property='og:type'>
+<meta content='/favicon-144.png' property='og:image'>
+<meta content='Qwiklabs' property='og:site_name'>
+<meta content='This lab focuses on running Apache Spark jobs on Cloud Dataproc.' property='og:description'>
+<meta content='/qwiklabs_logo_900x887.png' property='og:logo' size='900x887'>
+<meta content='/qwiklabs_logo_994x187.png' property='og:logo' size='994x187'>
+<meta content='#3681E4' property='msapplication-TileColor'>
+<meta content='/favicon-144.png' property='msapplication-TileImage'>
+<link href='/favicon-32.png' rel='shortcut icon'>
+<link color='#3681E4' href='/favicon-svg.svg' rel='mask-icon'>
+<link href='/favicon-180.png' rel='apple-touch-icon-precomposed'>
+<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Oswald:400|Roboto+Mono:400,700|Roboto:300,400,500,700|Google+Sans:300,400,500,700|Google+Sans+Display:400|Material+Icons|Google+Material+Icons" />
+
+
+<!--[if lt IE 9]>
+<script src='http://html5shim.googlecode.com/svn/trunk/html5.js' type='text/javascript'></script>
+<![endif]-->
+<!--[endif]>  <![endif]-->
+<script>
+//<![CDATA[
+window.gon={};gon.current_user={"firstname":"Carlo","lastname":"Andr\u00e9 Castro Galindo","fullname":"Carlo Andr\u00e9 Castro Galindo","company":"Coursera","email":"carlocastrogalindo@gmail.com","origin":"googlecoursera-run, lti-coursera","subscriptions":0,"id":"eb3f0602d940d94d2eaeef36f2aa2e77","qlCreatedAt":"2020-02-28 17:36:48 UTC","optIn":null};gon.segment="j4Im8pqIko0Lxq4wVVZWMPMM0EroHUvb";gon.deployment="googlecoursera-run";
+//]]>
+</script>
+<script src='https://www.google.com/recaptcha/api.js?render=6LeVI8IUAAAAAJNdox5eTkYrw9SbvhZ1TFyv3iHr'></script>
+<script type='application/ld+json'>
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "url": "https://www.qwiklabs.com/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.qwiklabs.com/catalog?keywords={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script id='ze-snippet' src='https://static.zdassets.com/ekr/snippet.js?key=511e4158-0aec-4e3c-b2e6-4daa1769f51e'></script>
+
+
+
+<link rel="stylesheet" media="all" href="https://cdn.qwiklabs.com/assets/application-f10403ed299ec2ae6753a3eff8eb3091bcd0b12738b15cc80bef5381c8390851.css" />
+<script>
+  EVENT_SOURCE_BASE_URL = "https://googlecoursera-run.qwiklabs.com/nchan-sub?id=";
+</script>
+<script src="https://cdn.qwiklabs.com/polyfills/webcomponents-loader.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/hallofmirrors/hallofmirrors-25391ecd312402bb4a2d7197dd3a836f1aed7cabe10d5bd202ed1f6c5b165657.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.qwiklabs.com/assets/vendor-45d462772c30000424907184f70c7157e95fb6227698d1671c5051818a6f60d8.js"></script>
+<script src="https://cdn.qwiklabs.com/assets/application-62dd18a5d24cafd385e8d522b9397c4c78c80e392576bae9fcd6e2f994fee522.js"></script>
+</head>
+<body class='focuses focuses-show lab-show l-full no-nav'>
+<div class='header-container'>
+<div class='header'>
+<a class='mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect header__button header__button--nav header__nav-panel-button js-nav-toggle'>
+<i class='material-icons'>menu</i>
+</a>
+<div class='header__title'>
+<a class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--nav" href="https://www.coursera.org/"><ql-icon>arrow_back</ql-icon></a>
+
+<h1 class='headline-5'>
+Running Apache Spark jobs on Cloud Dataproc
+</h1>
+</div>
+<div class='header__actions'>
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button header__button--action header__button--search js-header-search-bar-button'>
+<i class='material-icons'>search</i>
+</a>
+
+<ql-help context="lab" productdata="{&quot;userId&quot;:2485272}" data-analytics-action="opened_help" data-analytics-label="lab"></ql-help>
+<a class='header-my-account-button mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect js-my-account-button'>
+<img class="avatar " alt="avatar image" src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+</a>
+<div class='header-my-account-menu js-my-account-menu'>
+<div class='card elevation-2 no-padding'>
+<div class='my-account-menu__top'>
+<img class="avatar " alt="avatar image" src="https://secure.gravatar.com/avatar/be719396bbcc1e8bcb204a54e1920c54.png?s=80&amp;d=mm" />
+<div class='my-account-menu__info'>
+<h4 class='subtitle-headline-1'>
+Carlo André Castro Galindo
+</h4>
+<p class='body-2 text--gray'>
+<span>carlocastrogalindo@gmail.com</span>
+</p>
+<a class="button" href="/my_account/profile">My Account</a>
+</div>
+</div>
+<div class='my-account-menu__bottom'>
+<a class="text--green subtitle-headline-2" href="/my_account/credits">0 Credits
+</a><a data-analytics-action="clicked_sign_out" class="button button--hairline" rel="nofollow" data-method="delete" href="/users/sign_out">Sign Out</a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div class='header__search-bar js-header-search-bar'>
+<form id="catalog-search-mobile" onsubmit="ql.catalogSearchFilter(); return false;" action="/searches/elasticsearch" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="kljzJi5JJje41CbLZSWGIaYWWYdLtfAVs/pDQ+j1YWaTfo9HDqs87C7wlQvA3pat0xvWjKG0X4X7yjBFubbmwQ==" />
+<input type="text" name="keywords" id="keywords" placeholder="Search" maxlength="255" aria-label="catalog search bar" />
+</form>
+
+<a class='mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect header__button'>
+<i class='material-icons'>close</i>
+</a>
+</div>
+</div>
+
+<nav class='nav-bar'>
+<a class="nav-bar__item js-navigation-button" href="/"><ql-icon class='nav-bar__item__icon'>
+home
+</ql-icon>
+<span class='nav-bar__item__label'>
+Home
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/catalog"><ql-icon class='nav-bar__item__icon'>
+school
+</ql-icon>
+<span class='nav-bar__item__label'>
+Catalog
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="/my_learning"><ql-icon class='nav-bar__item__icon'>
+event_note
+</ql-icon>
+<span class='nav-bar__item__label'>
+My Learning
+</span>
+</a>
+</nav>
+
+<nav class='nav-panel js-nav-panel'>
+<div class='nav-panel__logo'>
+<div class='logo logo--blue'></div>
+</div>
+<a title="Home" tabindex="-1" class="nav-panel__item js-navigation-button" href="/"><ql-icon class='nav-panel__item__icon'>
+home
+</ql-icon>
+<div class='nav-panel__item__label'>
+Home
+</div>
+</a>
+<a title="Catalog" tabindex="-1" class="nav-panel__item js-navigation-button" href="/catalog"><ql-icon class='nav-panel__item__icon'>
+school
+</ql-icon>
+<div class='nav-panel__item__label'>
+Catalog
+</div>
+</a>
+<a title="My Learning" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_learning"><ql-icon class='nav-panel__item__icon'>
+event_note
+</ql-icon>
+<div class='nav-panel__item__label'>
+My Learning
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a title="Profile" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/profile"><ql-icon class='nav-panel__item__icon'>
+account_circle
+</ql-icon>
+<div class='nav-panel__item__label'>
+Profile
+</div>
+</a>
+<a title="Credits &amp; Subscriptions" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/credits"><ql-icon class='nav-panel__item__icon'>
+money
+</ql-icon>
+<div class='nav-panel__item__label'>
+Credits &amp; Subscriptions
+</div>
+</a>
+<a title="Security" tabindex="-1" class="nav-panel__item js-navigation-button" href="/my_account/security"><ql-icon class='nav-panel__item__icon'>
+security
+</ql-icon>
+<div class='nav-panel__item__label'>
+Security
+</div>
+</a>
+<div class='nav-panel__spacer'></div>
+<a class="nav-panel__item" tabindex="-1" href="#"><ql-help>
+<div class='nav-panel__help-item'>
+<ql-icon class='nav-panel__item__icon'>help</ql-icon>
+<div class='nav-panel__item__label'>Help</div>
+</div>
+</ql-help>
+</a><div class='nav-panel__small-links'>
+<a tabindex="-1" href="/privacy_policy">Privacy</a>
+<a tabindex="-1" href="/terms_of_service">Terms</a>
+</div>
+</nav>
+<div class='nav-panel__overlay js-nav-toggle'></div>
+
+<main class='js-main'>
+<span class='hidden' id='flash-sibling-before'></span>
+
+<div class='l-main-wrapper' id='main-wrapper'>
+
+
+
+
+
+
+
+<div class='js-lab-state' data-analytics-payload='{&quot;label&quot;:&quot;Running Apache Spark jobs on Cloud Dataproc&quot;,&quot;lab_name&quot;:&quot;Running Apache Spark jobs on Cloud Dataproc&quot;,&quot;classroom_name&quot;:null,&quot;deployment&quot;:&quot;googlecoursera-run&quot;}' data-focus-id='46733' data-lab-billing-limit='0.0' data-lab-duration='5400' data-parent='classroom'></div>
+<ql-lab-control-panel class='js-lab-control-panel l-lab-control-panel' connectionDetails='[]' connectionFiles='[]' labControlButton='{&quot;disabled&quot;:false,&quot;pending&quot;:false,&quot;running&quot;:false}' labTimer='{&quot;ticking&quot;:false,&quot;secondsRemaining&quot;:5400}' studentResources='[]'></ql-lab-control-panel>
+<div class='l-lab-main-body'>
+<div class='js-lab-content lab-content'>
+<div class='alert alert--fake js-alert'>
+<p class='alert__message js-alert-message'></p>
+<a class='alert__close js-alert-close'>
+<i class='fa fa-times'></i>
+</a>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='lab-content__markdown-wrapper'>
+<div class='lab-preamble'>
+<h1 class='lab-preamble__title'>
+Running Apache Spark jobs on Cloud Dataproc
+</h1>
+<div class='lab-preamble__details subtitle-headline-1'>
+<span>1 hour 30 minutes</span>
+<span>1 Credit</span>
+<div class='lab__rating'>
+<a href="/focuses/46733/reviews?parent=catalog"><div class='rateit' data-rateit-readonly='true' data-rateit-value='4.2695'></div>
+
+</a><a data-target='#lab-review-modal' data-toggle='modal'>
+Rate Lab
+</a>
+</div>
+</div>
+</div>
+
+<div class='lab-content__inner-wrapper'>
+<div class='js-markdown-instructions lab-content__markdown markdown-lab-instructions' id='markdown-lab-instructions'>
+
+
+
+<h2 id="step1">Overview</h2>
+<p>In this lab you will learn how to how to migrate Apache Spark code to Cloud Dataproc. You will follow a sequence of steps progressively moving more of the job components over to GCP services:</p>
+<ul>
+<li>
+<p>Run original Spark code on Cloud Dataproc (Lift and Shift)</p>
+</li>
+<li>
+<p>Replace HDFS with Google Cloud Storage ( cloud-native)</p>
+</li>
+<li>
+<p>Automate everything so it runs on job-specific clusters ( cloud-optimized)</p>
+</li>
+</ul>
+<h2 id="step2">Objectives</h2>
+<p>In this lab you will learn how to:</p>
+<ul>
+<li>
+<p>Migrate existing Spark jobs to Cloud Dataproc</p>
+</li>
+<li>
+<p>Modify Spark jobs to use Cloud Storage instead of HDFS</p>
+</li>
+<li>
+<p>Optimize Spark jobs to run on Job specific clusters</p>
+</li>
+</ul>
+<h4>What will you use?</h4>
+<ul>
+<li>
+<p>Cloud Dataproc</p>
+</li>
+<li>
+<p>Apache Spark</p>
+</li>
+</ul>
+<h2 id="step3">Scenario</h2>
+<p>You are migrating an existing Spark workload to Cloud Dataproc and then progressively modifying the Spark code to make use of GCP native features and services.</p>
+<h2 id="step4">Lab setup</h2>
+<h4>Before you click the Start Lab button</h4>
+<p>Read these instructions. Labs are timed and you cannot pause them. The timer, which starts when you click Start Lab, shows how long Cloud resources will be made available to you.</p>
+<p>This Qwiklabs hands-on lab lets you do the lab activities yourself in a real cloud environment, not in a simulation or demo environment. It does so by giving you new, temporary credentials that you use to sign in and access the Google Cloud Platform for the duration of the lab.</p>
+<h4>What you need</h4>
+<p>To complete this lab, you need:</p>
+<ul>
+<li>Access to a standard internet browser (Chrome browser recommended).</li>
+<li>Time to complete the lab.</li>
+</ul>
+<p><strong><em>Note:</em></strong> If you already have your own personal GCP account or project, do not use it for this lab.</p>
+
+<h4>How to start your lab and sign in to the Console</h4>
+<ol>
+<li>
+<p>Click the <strong>Start Lab</strong> button. If you need to pay for the lab, a pop-up opens for you to select your payment method.
+On the left is a panel populated with the temporary credentials that you must use for this lab.</p>
+<p><img alt="Open Google Console" src="https://cdn.qwiklabs.com/%2FtHp4GI5VSDyTtdqi3qDFtevuY014F88%2BFow%2FadnRgE%3D"></p>
+</li>
+<li>
+<p>Copy the username, and then click <strong>Open Google Console</strong>.
+The lab spins up resources, and then opens another tab that shows the <strong>Choose an account</strong> page.</p>
+<p><strong><em>Tip:</em></strong> Open the tabs in separate windows, side-by-side.</p>
+</li>
+<li>
+<p>On the Choose an account page, click <strong>Use Another Account</strong>.</p>
+<p><img alt="Choose an account" src="https://cdn.qwiklabs.com/eQ6xPnPn13GjiJP3RWlHWwiMjhooHxTNvzfg1AL2WPw%3D"></p>
+</li>
+<li>
+<p>The Sign in page opens. Paste the username that you copied from the Connection Details panel. Then copy and paste the password.</p>
+<p><strong><em>Important:</em></strong> You must use the credentials from the Connection Details panel. Do not use your Qwiklabs credentials. If you have your own GCP account, do not use it for this lab (avoids incurring charges).</p>
+</li>
+<li>
+<p>Click through the subsequent pages:</p>
+<ul>
+<li>Accept the terms and conditions.</li>
+<li>Do not add recovery options or two-factor authentication (because this is a temporary account).</li>
+<li>Do not sign up for free trials.</li>
+</ul>
+</li>
+</ol>
+<p>After a few moments, the GCP console opens in this tab.</p>
+<aside>
+<b>Note:</b> You can view the menu with a list of GCP Products and Services by clicking the <b>Navigation menu</b> at the top-left, next to “Google Cloud Platform”.
+<img alt="Cloud Console Menu" src="https://cdn.qwiklabs.com/9vT7xPlxoNP%2FPsK0J8j0ZPFB4HnnpaIJVCDByaBrSHg%3D">
+</aside>
+
+<h3>Activate Google Cloud Shell</h3>
+<p>Google Cloud Shell is a virtual machine that is loaded with development tools. It offers a persistent 5GB home directory and runs on the Google Cloud.
+Google Cloud Shell provides command-line access to your GCP resources.</p>
+<ol>
+<li>
+<p>In GCP console, on the top right toolbar, click the Open Cloud Shell button.</p>
+<p><img alt="Cloud Shell icon" src="https://cdn.qwiklabs.com/vdY5e%2Fan9ZGXw5a%2FZMb1agpXhRGozsOadHURcR8thAQ%3D"></p>
+</li>
+<li>
+<p>Click <strong>Continue</strong>.
+<img alt="cloudshell_continue.png" src="https://cdn.qwiklabs.com/lr3PBRjWIrJ%2BMQnE8kCkOnRQQVgJnWSg4UWk16f0s%2FA%3D"></p>
+</li>
+</ol>
+<p>It takes a few moments to provision and connect to the environment. When you are connected, you are already authenticated, and the project is set to your <em>PROJECT_ID</em>. For example:</p>
+<p><img alt="Cloud Shell Terminal" src="https://cdn.qwiklabs.com/hmMK0W41Txk%2B20bQyuDP9g60vCdBajIS%2B52iI2f4bYk%3D"></p>
+<p><strong>gcloud</strong> is the command-line tool for Google Cloud Platform. It comes pre-installed on Cloud Shell and supports tab-completion.</p>
+<p>You can list the active account name with this command:</p>
+<pre><code>gcloud auth list&#x000A;</code></pre>
+<p>Output:</p>
+<pre><code class="language-output prettyprint">Credentialed accounts:&#x000A; - &lt;myaccount&gt;@&lt;mydomain&gt;.com (active)&#x000A;</code></pre>
+<p>Example output:</p>
+<pre><code class="language-Output prettyprint">Credentialed accounts:&#x000A; - google1623327_student@qwiklabs.net&#x000A;</code></pre>
+<p>You can list the project ID with this command:</p>
+<pre><code>gcloud config list project&#x000A;</code></pre>
+<p>Output:</p>
+<pre><code class="language-output prettyprint">[core]&#x000A;project = &lt;project_ID&gt;&#x000A;</code></pre>
+<p>Example output:</p>
+<pre><code class="language-Output prettyprint">[core]&#x000A;project = qwiklabs-gcp-44776a13dea667a6&#x000A;</code></pre>
+<ql-infobox>
+  Full documentation of <strong>gcloud</strong> is available on
+  <a href="https://cloud.google.com/sdk/gcloud" target="_blank">
+    Google Cloud gcloud Overview
+  </a>.
+</ql-infobox>
+
+<h2 id="step5">Part 1: Lift and Shift</h2>
+<h3>Migrate existing Spark jobs to Cloud Dataproc</h3>
+<p>You will create a new Cloud Dataproc cluster and then run an imported Jupyter notebook that uses the cluster's default local Hadoop Distributed File system (HDFS) to store source data and then process that data just as you would on any Hadoop cluster using Spark. This demonstrates how many existing analytics workloads such as Jupyter notebooks containing Spark code require no changes when they are migrated to a Cloud Dataproc environment.</p>
+<h3>Configure and start a Cloud Dataproc cluster</h3>
+<ol>
+<li>
+<p>In the GCP Console, on the <strong>Navigation</strong> menu, in the <strong>Big Data</strong> section, click <strong>Dataproc</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Create Cluster</strong>.</p>
+</li>
+<li>
+<p>Enter <code>sparktodp</code> for <strong>Name</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Component gateway</strong> section, select <strong>Enable access to the web interfaces of default and selected optional components on the cluster</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Advanced options</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Image</strong> section, click <strong>Change</strong>.</p>
+</li>
+<li>
+<p>Select <strong>1.4 (Debian 9, Hadoop 2.9, Spark 2.4)</strong>.</p>
+</li>
+</ol>
+<p>This version includes Python3 which is required for the sample code used in this lab.</p>
+<ol start="8">
+<li>
+<p>Click <strong>Select</strong>.</p>
+</li>
+<li>
+<p>Under <strong>Optional components</strong>, click <strong>Select component</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Anaconda</strong> and <strong>Jupyter Notebook</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Select</strong> to close the Optional components dialog.</p>
+</li>
+<li>
+<p>Scroll down to the end of the page and click <strong>Create</strong>.</p>
+</li>
+</ol>
+<p>The cluster should start in a couple of minutes. You can proceed to the next step without waiting for the Cloud Dataproc Cluster to fully deploy.</p>
+<h3>Clone the source repository for the lab</h3>
+<p>In the Cloud Shell you clone the Git repository for the lab and copy the required notebook files to the Google Cloud Storage bucket used by Cloud Dataproc as the home directory for Jupyter notebooks.</p>
+<ol>
+<li>To clone the Git repository for the lab enter the following command in Cloud Shell:</li>
+</ol>
+<pre><code class="language-bash prettyprint">git -C ~ clone https://github.com/GoogleCloudPlatform/training-data-analyst&#x000A;&#x000A;</code></pre>
+<ol start="2">
+<li>To locate the default Google cloud Storage bucket used by Cloud Dataproc enter the following command in Cloud Shell:</li>
+</ol>
+<pre><code class="language-bash prettyprint">export DP_STORAGE="gs://$(gcloud dataproc clusters describe sparktodp --region=us-central1 --format=json | jq -r '.config.configBucket')"&#x000A;&#x000A;</code></pre>
+<ol start="3">
+<li>To copy the sample notebooks into the Jupyter working folder enter the following command in Cloud Shell:</li>
+</ol>
+<pre><code class="language-bash prettyprint">gsutil -m cp ~/training-data-analyst/quests/sparktobq/*.ipynb $DP_STORAGE/notebooks/jupyter&#x000A;&#x000A;</code></pre>
+<h3>Log in to the Jupyter Notebook</h3>
+<p>As soon as the cluster has fully started up you can connect to the Web interfaces. Click the refresh button to check as it may be deployed fully by the time you reach this stage.</p>
+<ol>
+<li>
+<p>On the Dataproc Clusters page wait for the cluster to finish starting and then click the name of your cluster to open the <strong>Cluster details</strong> page.</p>
+</li>
+<li>
+<p>Click <strong>Web Interfaces</strong>.</p>
+</li>
+<li>
+<p>Click the <strong>Jupyter</strong> link to open a new Jupyter tab in your browser.</p>
+</li>
+</ol>
+<p>This opens the Jupyter home page. Here you can see the contents of the <code>/notebooks/jupyter</code> directory in Google Storage that now includes the sample Jupyter notebooks used in this lab.</p>
+<ol start="4">
+<li>
+<p>Click the <strong>01_spark.ipynb</strong> notebook to open it.</p>
+</li>
+<li>
+<p>Click <strong>Cell</strong> and then <strong>Run All</strong> to run all of the cells in the notebook.</p>
+</li>
+<li>
+<p>Page back up to the top of the notebook and follow as the notebook completes runs each cell and outputs the results below them.</p>
+</li>
+</ol>
+<p>You can now step down through the cells and examine the code as it is processed so that you can see what the notebook is doing. In particular pay attention to where the data is saved and processed from.</p>
+<p>The first code cell fetches the source data file, which is an extract from the KDD Cup competition from the Knowledge, Discovery, and Data (KDD) conference in 1999. The data relates to computer intrusion detection events.</p>
+<pre><code class="language-bash prettyprint">!wget http://kdd.ics.uci.edu/databases/kddcup99/kddcup.data_10_percent.gz&#x000A;</code></pre>
+<p>In the second code cell, the source data is copied to the default (local) Hadoop file system.</p>
+<pre><code class="language-bash prettyprint">!hadoop fs -put kddcup* /&#x000A;</code></pre>
+<p>In the third code cell, the command lists contents of the default directory in the cluster's HDFS file system.</p>
+<pre><code class="language-bash prettyprint">!hadoop fs -ls /&#x000A;</code></pre>
+<h3>Reading in data</h3>
+<p>The data are gzipped CSV files. In Spark, these can be read directly using the textFile method and then parsed by splitting each row on commas.</p>
+<p>The Python Spark code starts in cell <code>In[4]</code>. In this cell Spark SQL is initialized and Spark is used to read in the source data as text and then returns the first 5 rows.</p>
+<pre><code class="language-Python prettyprint">from pyspark.sql import SparkSession, SQLContext, Row&#x000A;&#x000A;spark = SparkSession.builder.appName("kdd").getOrCreate()&#x000A;sc = spark.sparkContext&#x000A;data_file = "hdfs:///kddcup.data_10_percent.gz"&#x000A;raw_rdd = sc.textFile(data_file).cache()&#x000A;raw_rdd.take(5)&#x000A;</code></pre>
+<p>In cell <code>In [5]</code> each row is split, using <code>,</code> as a delimiter and parsed using a prepared inline schema in the code.</p>
+<pre><code class="language-Python prettyprint">csv_rdd = raw_rdd.map(lambda row: row.split(","))&#x000A;parsed_rdd = csv_rdd.map(lambda r: Row(&#x000A;    duration=int(r[0]),&#x000A;    protocol_type=r[1],&#x000A;    service=r[2],&#x000A;    flag=r[3],&#x000A;    src_bytes=int(r[4]),&#x000A;    dst_bytes=int(r[5]),&#x000A;    wrong_fragment=int(r[7]),&#x000A;    urgent=int(r[8]),&#x000A;    hot=int(r[9]),&#x000A;    num_failed_logins=int(r[10]),&#x000A;    num_compromised=int(r[12]),&#x000A;    su_attempted=r[14],&#x000A;    num_root=int(r[15]),&#x000A;    num_file_creations=int(r[16]),&#x000A;    label=r[-1]&#x000A;    )&#x000A;)&#x000A;parsed_rdd.take(5)&#x000A;</code></pre>
+<h3>Spark analysis</h3>
+<p>In cell <code>In [6]</code> a Spark SQL context is created and a Spark dataframe using that context is created using the parsed input data from the previous stage. Row data can be selected and displayed using the dataframe's <code>.show()</code> method to output a view summarizing a count of selected fields.</p>
+<pre><code class="language-Python prettyprint">sqlContext = SQLContext(sc)&#x000A;df = sqlContext.createDataFrame(parsed_rdd)&#x000A;connections_by_protocol = df.groupBy('protocol_type').count().orderBy('count', ascending=False)&#x000A;connections_by_protocol.show()&#x000A;</code></pre>
+<p>The <code>.show()</code> method produces an output table similar to this:</p>
+<pre><code>+-------------+------+&#x000A;|protocol_type| count|&#x000A;+-------------+------+&#x000A;|         icmp|283602|&#x000A;|          tcp|190065|&#x000A;|          udp| 20354|&#x000A;+-------------+------+&#x000A;</code></pre>
+<p>SparkSQL can also be used to query the parsed data stored in the Dataframe. In cell <code>In [7]</code> a temporary table (<code>connections</code>) is registered that is then referenced inside the subsequent SparkSQL SQL query statement.</p>
+<pre><code class="language-SQL prettyprint">df.registerTempTable("connections")&#x000A;attack_stats = sqlContext.sql("""&#x000A;    SELECT&#x000A;      protocol_type,&#x000A;      CASE label&#x000A;        WHEN 'normal.' THEN 'no attack'&#x000A;        ELSE 'attack'&#x000A;      END AS state,&#x000A;      COUNT(*) as total_freq,&#x000A;      ROUND(AVG(src_bytes), 2) as mean_src_bytes,&#x000A;      ROUND(AVG(dst_bytes), 2) as mean_dst_bytes,&#x000A;      ROUND(AVG(duration), 2) as mean_duration,&#x000A;      SUM(num_failed_logins) as total_failed_logins,&#x000A;      SUM(num_compromised) as total_compromised,&#x000A;      SUM(num_file_creations) as total_file_creations,&#x000A;      SUM(su_attempted) as total_root_attempts,&#x000A;      SUM(num_root) as total_root_acceses&#x000A;    FROM connections&#x000A;    GROUP BY protocol_type, state&#x000A;    ORDER BY 3 DESC&#x000A;    """)&#x000A;attack_stats.show()&#x000A;</code></pre>
+<p>You will see output similar to this truncated example when the query has finished:</p>
+<pre><code>+-------------+---------+----------+--------------+--&#x000A;|protocol_type|    state|total_freq|mean_src_bytes|&#x000A;+-------------+---------+----------+--------------+--&#x000A;|         icmp|   attack|    282314|        932.14|&#x000A;|          tcp|   attack|    113252|       9880.38|&#x000A;|          tcp|no attack|     76813|       1439.31|&#x000A;...&#x000A;...&#x000A;|          udp|   attack|      1177|          27.5|&#x000A;+-------------+---------+----------+--------------+--&#x000A;</code></pre>
+<p>And you can now also display this data visually using bar charts.</p>
+<p>The last cell, <code>In [8]</code> uses the <code>%matplotlib inline</code> Jupyter magic function to redirect matplotlib to render a graphic figure inline in the notebook instead of just dumping the data into a variable. This cell displays a bar chart using the <code>attack_stats</code> query from the previous step.</p>
+<pre><code class="language-Python prettyprint">%matplotlib inline&#x000A;ax = attack_stats.toPandas().plot.bar(x='protocol_type', subplots=True, figsize=(10,25))&#x000A;</code></pre>
+<p>The first part of the output should look like the following chart once all cells in the notebook have run successfully. You can scroll down in your notebook to see the complete output chart.</p>
+<p><img alt="display-bar-chart.png" src="https://cdn.qwiklabs.com/OzLx%2BtBPE20vJJnT6hGbAQ8jVH7Y%2B6xFNoi38erXuog%3D"></p>
+<h2 id="step6">Part 2: Separate Compute and Storage</h2>
+<h3>Modify Spark jobs to use Cloud Storage instead of HDFS</h3>
+<p>Taking this original 'Lift &amp; Shift' sample notebook you will now create a copy that decouples the storage requirements for the job from the compute requirements. In this case, all you have to do is replace the Hadoop file system calls with Google Storage calls by replacing <code>hdfs://</code> storage references with <code>gs://</code> references in the code and adjusting folder names as necessary.</p>
+<p>You start by using the cloud shell to place a copy of the source data in a new Cloud Storage bucket.</p>
+<ol>
+<li>In the Cloud Shell create a new storage bucket for your source data.</li>
+</ol>
+<pre><code class="language-bash prettyprint">export PROJECT_ID=$(gcloud info --format='value(config.project)')&#x000A;gsutil mb gs://$PROJECT_ID&#x000A;&#x000A;</code></pre>
+<ol start="2">
+<li>In the Cloud Shell copy the source data into the bucket.</li>
+</ol>
+<pre><code class="language-bash prettyprint">wget http://kdd.ics.uci.edu/databases/kddcup99/kddcup.data_10_percent.gz&#x000A;gsutil cp kddcup.data_10_percent.gz gs://$PROJECT_ID/&#x000A;&#x000A;</code></pre>
+<p>Make sure that the last command completes and the file has been copied to your new storage bucket.</p>
+<ol start="3">
+<li>
+<p>Switch back to the <code>01_spark</code> Jupyter Notebook tab in your browser.</p>
+</li>
+<li>
+<p>Click <strong>File</strong> and then select <strong>Make a Copy</strong>.</p>
+</li>
+<li>
+<p>When the copy opens, click the <strong>01_spark-Copy1</strong> title and rename it to <code>De-couple-storage</code>.</p>
+</li>
+<li>
+<p>Open the Jupyter tab for <code>01_spark</code>.</p>
+</li>
+<li>
+<p>Click <strong>File</strong> and then <strong>Save and checkpoint</strong> to save the notebook.</p>
+</li>
+<li>
+<p>Click <strong>File</strong> and then <strong>Close and Halt</strong> to shutdown the notebook.</p>
+</li>
+</ol>
+<p>If you are prompted to confirm that you want  to close the notebook click <strong>Leave</strong> or <strong>Cancel</strong>.</p>
+<ol start="9">
+<li>Switch back to the <code>De-couple-storage</code> Jupyter Notebook tab in your browser, if necessary.</li>
+</ol>
+<p>You no longer need the cells that download and copy the data onto the cluster's internal HDFS file system so you will remove those first.</p>
+<p>To delete a cell, you click in the cell to select it and then click the <strong>cut selected cells</strong> icon (the scissors) on the notebook toolbar.</p>
+<ol start="10">
+<li>Delete the initial comment cells and the first three code cells ( <code>In [1]</code>, <code>In [2]</code>, and <code>In [3]</code>) so that the notebook now starts with the section <strong>Reading in Data</strong>.</li>
+</ol>
+<p>You will now change the code in the first cell ( still called <code>In[4]</code> unless you have rerun the notebook ) that defines the data file source location and reads in the source data. The cell currently contains the following code:</p>
+<pre><code class="language-Python prettyprint">from pyspark.sql import SparkSession, SQLContext, Row&#x000A;&#x000A;spark = SparkSession.builder.appName("kdd").getOrCreate()&#x000A;sc = spark.sparkContext&#x000A;data_file = "hdfs:///kddcup.data_10_percent.gz"&#x000A;raw_rdd = sc.textFile(data_file).cache()&#x000A;raw_rdd.take(5)&#x000A;</code></pre>
+<ol start="11">
+<li>
+<p>Replace the contents of cell <code>In [4]</code> with the following code. The only change here is create a variable to store a Google Cloud Storage bucket name and then to point the <code>data_file</code> to the bucket we used to store the source data on Google Cloud Storage.</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">from pyspark.sql import SparkSession, SQLContext, Row&#x000A;&#x000A;gcs_bucket='[Your-Bucket-Name]'&#x000A;spark = SparkSession.builder.appName("kdd").getOrCreate()&#x000A;sc = spark.sparkContext&#x000A;data_file = "gs://"+gcs_bucket+"//kddcup.data_10_percent.gz"&#x000A;raw_rdd = sc.textFile(data_file).cache()&#x000A;raw_rdd.take(5)&#x000A;</code></pre>
+<p>When you have replaced the ccode the first cell will look similar to the following, with your lab project ID as the bucket name:</p>
+<p><img alt="cell-bucket-name.png" src="https://cdn.qwiklabs.com/6KAnevNQ3eR1UV9ngPIOWi%2FVQ5XsaJ8p2VgILdClKAQ%3D"></p>
+<ol start="12">
+<li>
+<p>In the cell you just updated replace the placeholder <code>[Your-Bucket-Name]</code> with the name of the storage bucket you created in the first step of this section. You created that bucket using the Project ID as the name, which you can copy here from the Qwiklabs lab login information panel on the left of this screen. Replace all of the placeholder text, including the brackets <code>[]</code>.</p>
+</li>
+<li>
+<p>Click <strong>Cell</strong> and then <strong>Run All</strong> to run all of the cells in the notebook.</p>
+</li>
+</ol>
+<p>You will see exactly the same output as you did when the file was loaded and run from internal cluster storage. Moving the source data files to Google Cloud Storage only requires that you repoint your storage source reference from <code>hdfs://</code> to <code>gs://</code>.</p>
+<h2 id="step7">Part 3:  Deploy Spark Jobs</h2>
+<h3>Optimize Spark jobs to run on Job specific clusters.</h3>
+<p>You now create a standalone Python file, that can be deployed as a Cloud Dataproc Job, that will perform the same functions as this notebook. To do this you add magic commands to the Python cells in a copy of this notebook to write the cell contents out to a file. You will also add an input parameter handler to set the storage bucket location when the Python script is called to make the code more portable.</p>
+<ol>
+<li>
+<p>In the Jupyter Notebook menu click <strong>File</strong> and select <strong>Make a Copy</strong>.</p>
+</li>
+<li>
+<p>When the copy opens, click the <strong>De-couple-storage-Copy1</strong> and rename it to <code>PySpark-analysis-file</code>.</p>
+</li>
+<li>
+<p>Open the Jupyter tab for <code>Decouple-storage</code>.</p>
+</li>
+<li>
+<p>Click <strong>File</strong> and then <strong>Save and checkpoint</strong> to save the notebook.</p>
+</li>
+<li>
+<p>Click <strong>File</strong> and then <strong>Close and Halt</strong> to shutdown the notebook.</p>
+</li>
+</ol>
+<p>If you are prompted to confirm that you want  to close the notebook click <strong>Leave</strong> or <strong>Cancel</strong>.</p>
+<ol start="6">
+<li>
+<p>Switch back to the <code>PySpark-analysis-file</code> Jupyter Notebook tab in your browser, if necessary.</p>
+</li>
+<li>
+<p>Click the first cell at the top of the notebook.</p>
+</li>
+<li>
+<p>Click <strong>Insert</strong> and select <strong>Insert Cell Above</strong>.</p>
+</li>
+<li>
+<p>Paste the following library import and parameter handling code into this new first code cell:</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">%%writefile spark_analysis.py&#x000A;&#x000A;import matplotlib&#x000A;matplotlib.use('agg')&#x000A;&#x000A;import argparse&#x000A;parser = argparse.ArgumentParser()&#x000A;parser.add_argument("--bucket", help="bucket for input and output")&#x000A;args = parser.parse_args()&#x000A;&#x000A;BUCKET = args.bucket&#x000A;</code></pre>
+<p>The <code>%%writefile spark_analysis.py</code> Jupyter magic command creates a new output file to contain your standalone python script. You will add a variation of this to the remaining cells to append the contents of each cell to the standalone script file.</p>
+<p>This code also imports the <code>matplotlib</code> module and explicitly sets the default plotting backend via <code>matplotlib.use('agg')</code> so that the plotting code runs outside of a Jupyter notebook.</p>
+<ol start="10">
+<li>
+<p>For the remaining cells insert <code>%%writefile -a spark_analysis.py</code> at the start of each Python code cell. These are the five cells labelled <strong>In [x]</strong>.</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">%%writefile -a spark_analysis.py&#x000A;</code></pre>
+<p>For example the next cell should now look as follows.</p>
+<pre><code class="language-Python prettyprint">%%writefile -a spark_analysis.py&#x000A;&#x000A;from pyspark.sql import SparkSession, SQLContext, Row&#x000A;&#x000A;spark = SparkSession.builder.appName("kdd").getOrCreate()&#x000A;sc = spark.sparkContext&#x000A;data_file = "gs://{}/kddcup.data_10_percent.gz".format(BUCKET)&#x000A;raw_rdd = sc.textFile(data_file).cache()&#x000A;#raw_rdd.take(5)&#x000A;</code></pre>
+<ol start="11">
+<li>
+<p>Repeat this step, inserting <code>%%writefile -a spark_analysis.py</code> at the start of each code cell until you reach the end.</p>
+</li>
+<li>
+<p>In the last cell, where the Pandas bar chart is plotted remove the <code>%matplotlib inline</code> magic command.</p>
+</li>
+</ol>
+<aside class="warning"><p><strong>Note: </strong>You must remove this inline matplotlib Jupyter magic directive or your script will fail when you run it. </p>
+</aside>
+<ol start="13">
+<li>
+<p>Make sure you have selected the last code cell in the notebook then, in the menu bar, click <strong>Insert</strong> and select <strong>Insert Cell Below</strong>.</p>
+</li>
+<li>
+<p>Paste the following code into the new cell.</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">%%writefile -a spark_analysis.py&#x000A;&#x000A;ax[0].get_figure().savefig('report.png');&#x000A;&#x000A;</code></pre>
+<ol start="15">
+<li>
+<p>Add another new cell at the end of the notebook and paste in the following:</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">%%writefile -a spark_analysis.py&#x000A;&#x000A;import google.cloud.storage as gcs&#x000A;bucket = gcs.Client().get_bucket(BUCKET)&#x000A;for blob in bucket.list_blobs(prefix='sparktodp/'):&#x000A;    blob.delete()&#x000A;bucket.blob('sparktodp/report.png').upload_from_filename('report.png')&#x000A;</code></pre>
+<ol start="16">
+<li>
+<p>Add a new cell at the end of the notebook and paste in the following:</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">%%writefile -a spark_analysis.py&#x000A;&#x000A;connections_by_protocol.write.format("csv").mode("overwrite").save(&#x000A;    "gs://{}/sparktodp/connections_by_protocol".format(BUCKET))&#x000A;</code></pre>
+<h3>Test Automation</h3>
+<p>You now test that the PySpark code runs successfully as a file by calling the local copy from inside the notebook, passing in a parameter to identify the storage bucket you created earlier that stores the input data for this job. The same bucket will be used to store the report data files produced by the script.</p>
+<ol>
+<li>
+<p>In the <code>PySpark-analysis-file</code> notebook add a new cell at the end of the notebook and paste in the following:</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">BUCKET_list = !gcloud info --format='value(config.project)'&#x000A;BUCKET=BUCKET_list[0]&#x000A;print('Writing to {}'.format(BUCKET))&#x000A;!/opt/conda/anaconda/bin/python spark_analysis.py --bucket=$BUCKET&#x000A;&#x000A;</code></pre>
+<p>This code assumes that you have followed the earlier instructions and created a Cloud Storage Bucket using your lab Project ID as the Storage Bucket name. If you used a different name modify this code to set the <code>BUCKET</code> variable to the name you used.</p>
+<ol start="2">
+<li>Add a new cell at the end of the notebook and paste in the following:</li>
+</ol>
+<pre><code class="language-bash prettyprint">!gsutil ls gs://$BUCKET/sparktodp/**&#x000A;&#x000A;</code></pre>
+<p>This lists the script output files that have been saved to your Cloud Storage bucket.</p>
+<ol start="3">
+<li>
+<p>To save a copy of the Python file to persistent storage, add a new cell and paste in the following:</p>
+</li>
+</ol>
+<pre><code class="language-Python prettyprint">!gsutil cp spark_analysis.py gs://$BUCKET/sparktodp/spark_analysis.py&#x000A;&#x000A;</code></pre>
+<ol start="4">
+<li>Click <strong>Cell</strong> and then <strong>Run All</strong> to run all of the cells in the notebook.</li>
+</ol>
+<p>If the notebook successfully creates and runs the Python file you should see output similar to the following for the last two cells. This indicates that the script has run to completion saving the output to the Cloud Storage bucket you created earlier in the lab.</p>
+<p><img alt="successful-analysis-run.png" src="https://cdn.qwiklabs.com/mHFoR%2FeWebAFWPwgtLr4gkaEkDh1tTXojQrlwJkN53Q%3D"></p>
+<aside class="note"><p><strong>Note: </strong>The most likely source of an error at this stage is that you did not remove the matplotlib directive in <strong>In [7]</strong>. Recheck that you have modified all of the cells as per the instructions above, and have not skipped any steps.</p>
+</aside>
+<h3>Run the Analysis Job from Cloud Shell.</h3>
+<ol>
+<li>
+<p>Switch to your Cloud Shell and copy the Python script from Cloud Storage so you can run it as a Cloud Dataproc Job.</p>
+</li>
+</ol>
+<pre><code class="language-bash prettyprint">gsutil cp gs://$PROJECT_ID/sparktodp/spark_analysis.py spark_analysis.py&#x000A;</code></pre>
+<ol start="2">
+<li>
+<p>Create a launch script.</p>
+</li>
+</ol>
+<pre><code class="language-bash prettyprint">nano submit_onejob.sh&#x000A;</code></pre>
+<ol start="3">
+<li>Paste the following into the script:</li>
+</ol>
+<pre><code class="language-bash prettyprint">#!/bin/bash&#x000A;gcloud dataproc jobs submit pyspark \&#x000A;       --cluster sparktodp \&#x000A;       --region us-central1 \&#x000A;       spark_analysis.py \&#x000A;       -- --bucket=$1&#x000A;</code></pre>
+<ol start="4">
+<li>
+<p>Press CTRL+X then Y to exit and save.</p>
+</li>
+<li>
+<p>Make the script executable:</p>
+</li>
+</ol>
+<pre><code class="language-bash prettyprint">chmod +x submit_onejob.sh&#x000A;</code></pre>
+<ol start="6">
+<li>Launch the PySpark Analysis job:</li>
+</ol>
+<pre><code class="language-bash prettyprint">./submit_onejob.sh $PROJECT_ID&#x000A;</code></pre>
+<ol start="7">
+<li>
+<p>In the Cloud Console tab navigate to the <strong>Dataproc</strong> &gt; <strong>Clusters</strong> page if it is not already open.</p>
+</li>
+<li>
+<p>Click <strong>Jobs</strong>.</p>
+</li>
+<li>
+<p>Click the name of the job that is listed. You can monitor progress here as well as from the Cloud shell. Wait for the Job to complete successfully.</p>
+</li>
+<li>
+<p>Navigate to your storage bucket and note that the output report, <code>/sparktodp/report.png</code> has an updated time-stamp indicating that the stand-alone job has completed successfully.</p>
+</li>
+</ol>
+<p>The storage bucket used by this Job for input and output data storage is the bucket that is used just the Project ID as the name.</p>
+<ol start="11">
+<li>
+<p>Navigate back to the <strong>Dataproc</strong> &gt; <strong>Clusters</strong> page.</p>
+</li>
+<li>
+<p>Select the <strong>sparktodp</strong> cluster and click <strong>Delete</strong>. You don't need it any more.</p>
+</li>
+<li>
+<p>Click <strong>OK</strong>.</p>
+</li>
+<li>
+<p>Close both <strong>Jupyter</strong> tabs in your browser.</p>
+</li>
+</ol>
+<h2 id="step8">End your lab</h2>
+<p>When you have completed your lab, click <strong>End Lab</strong>. Qwiklabs removes the resources you’ve used and cleans the account for you.</p>
+<p>You will be given an opportunity to rate the lab experience. Select the applicable number of stars, type a comment, and then click <strong>Submit</strong>.</p>
+<p>The number of stars indicates the following:</p>
+<ul>
+<li>1 star = Very dissatisfied</li>
+<li>2 stars = Dissatisfied</li>
+<li>3 stars = Neutral</li>
+<li>4 stars = Satisfied</li>
+<li>5 stars = Very satisfied</li>
+</ul>
+<p>You can close the dialog box if you don't want to provide feedback.</p>
+<p>For feedback, suggestions, or corrections, please use the <strong>Support</strong> tab.</p>
+
+<p>Copyright 2019 Google LLC All rights reserved. Google and the Google logo are trademarks of Google LLC. All other company and product names may be trademarks of the respective companies with which they are associated.</p>
+
+
+
+</div>
+<div class='js-lab-content-outline lab-content__outline'>
+<a href='#step1'>Overview</a><a href='#step2'>Objectives</a><a href='#step3'>Scenario</a><a href='#step4'>Lab setup</a><a href='#step5'>Part 1: Lift and Shift</a><a href='#step6'>Part 2: Separate Compute and Storage</a><a href='#step7'>Part 3:  Deploy Spark Jobs</a><a href='#step8'>End your lab</a>
+</div>
+</div>
+
+</div>
+
+
+</div>
+</div>
+<div class='lab-introduction js-lab-introduction is-hidden'>
+<div class='lab-introduction__inner'>
+<h1 class='headline-1'>Welcome to Your First Lab!</h1>
+<ql-icon-button class='js-skip-button'>close</ql-icon-button>
+<div class='lab-introduction__video'>
+<iframe allow='autoplay; encrypted-media' allowfullscreen frameborder='0' id='lab-introduction' src='https://www.youtube.com/embed/yF7EDXKTmoQ?enablejsapi=1&amp;rel=0&amp;showinfo=0'></iframe>
+</div>
+<a class='js-skip-button button button--outline'>Skip this video</a>
+</div>
+</div>
+
+
+
+</div>
+</main>
+<div class='modal fade' id='lab-details-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<div class='modal-body'>
+<p class='l-mbm'>
+This lab focuses on running Apache Spark jobs on Cloud Dataproc.
+</p>
+<p class='small-label l-mbs'>
+<strong>
+Duration:
+</strong>
+0m setup
+&middot;
+90m access
+&middot;
+90m completion
+</p>
+<p class='small-label l-mbs'>
+<span><strong>Levels: </strong>advanced</span>
+</p>
+<p class='small-label'>
+<strong>
+Permalink:
+</strong>
+<a href="https://googlecoursera.qwiklabs.com/catalog_lab/2120">https://googlecoursera.qwiklabs.com/catalog_lab/2120</a>
+</p>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Got It
+</a>
+</div>
+
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+<div class='modal fade' id='lab-review-modal'>
+<div class='modal-container'>
+<div class='mdl-shadow--24dp modal-content'>
+<form class="simple_form js-lab-review-form" id="new_lab_review" action="/lab_reviews" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><div class='modal-body'>
+<p class='label'>
+How satisfied are you with this lab?*
+</p>
+<div class='rateit js-rateit' data-rateit-max='5' data-rateit-min='0' data-rateit-resetable='false' data-rateit-step='1' data-rateit-value='0'></div>
+<div class='l-mtm'>
+
+<div class="control-group hidden lab_review_user_id"><div class="controls"><input class="hidden" type="hidden" value="2485272" name="lab_review[user_id]" id="lab_review_user_id" /></div></div>
+<div class="control-group hidden lab_review_classroom_id"><div class="controls"><input class="hidden" type="hidden" value="5948" name="lab_review[classroom_id]" id="lab_review_classroom_id" /></div></div>
+<div class="control-group hidden lab_review_lab_id"><div class="controls"><input class="hidden" type="hidden" value="2120" name="lab_review[lab_id]" id="lab_review_lab_id" /></div></div>
+<div class="control-group hidden lab_review_focus_id"><div class="controls"><input class="hidden" type="hidden" value="46733" name="lab_review[focus_id]" id="lab_review_focus_id" /></div></div>
+<div class="control-group hidden lab_review_rating"><div class="controls"><input class="hidden js-rating-input" type="hidden" name="lab_review[rating]" id="lab_review_rating" /></div></div>
+<div class="control-group text optional lab_review_comment"><label class="text optional control-label" for="lab_review_comment">Comment</label><div class="controls"><textarea class="text optional" name="lab_review[comment]" id="lab_review_comment">
+</textarea></div></div>
+</div>
+</div>
+<div class='modal-actions'>
+<a class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' data-dismiss='modal'>
+Cancel
+</a>
+<input type="submit" name="commit" value="Submit" disabled="disabled" class="btn mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" id="submit" data-disabled="false" data-disable-with="Submit" />
+</div>
+</form>
+
+</div>
+</div>
+<iframe class='l-ie-iframe-fix'></iframe>
+</div>
+
+<script>
+  $( function() {
+    ql.initMaterialInputs();
+    initChosen();
+    initSearch();
+    initTabs();
+    ql.list.init();
+    ql.favoriting.init();
+    ql.header.myAccount.init();
+    initTooltips();
+    ql.autocomplete.init();
+    ql.modals.init();
+    ql.toggleButtons.init();
+    ql.analytics.init();
+    initLabContent( );
+  ql.labOutline.links.init();
+  ql.labOutline.layout.init();
+  initLabReviewModal();
+  ql.labAssessment.init();
+  ql.labIntroduction.init( true );
+  ql.labData.init();
+  initLabTranslations( {"are_you_sure":"All done? If you end this lab, you will lose all your work. You may not be able to restart the lab if there is a quota limit. Are you sure you want to end this lab?\n","in_progress":"*In Progress*","ending":"*Ending*","starting":"*Starting, please wait*","end_concurrent_labs":"Sorry, you can only run one lab at a time. To start this lab, please confirm that you want all of your existing labs to end.\n","copied":"Copied","no_resource":"Error retrieving resource.","no_support":"No Support","mac_press":"Press ⌘-C to copy","thanks_review":"Thanks for reviewing this lab.","windows_press":"Press Ctrl-C to copy","days":"days"} );
+  ql.labRun.init();
+  ql.initHeader();
+  ql.navigation.init();
+  ql.navPanel.init();
+  ql.navigation.init();
+  
+  });
+</script>
+<style>
+  .mdl-layout__container {
+    position: static
+  }
+</style>
+</body>
+</html>
