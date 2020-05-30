@@ -1,0 +1,85 @@
+TIPS
+
+Spark
+- Spark is important because it does part of its pipeline processing in memory rather than copying from disk.
+- If the situation you're analyzing has data in BigQuery, and perhaps the business logic is better expressed in terms of functional code rather than SQL. You may want to run a Spark job on the data.
+- If you need to modify the cluster, consider whether you have the right data-processing solution. There are so many services available on Google Cloud, you might be able to use a service rather than hosting your own on the cluster.
+
+Dataflow (Apache BEAM as a Service)
+
+- For Cloud Dataflow users, use roles to limit access to only Dataflow Resources, not just the Project.
+- A pipeline is a more maintainable and less error-prone way to organize data processing code.
+- Dataflow templates open up new options for separation of work, that means better security and resource accountability.
+
+BigQuery
+
+- BigQuery frontend does analysis (Run processing directly on that data).
+- BigQuery backend does storage (Tables).
+- Together: a Data Warehouse solution.
+- Access control granularity: Projects and Datasets
+- Cloud Dataflow is an excellent ETL solution for BigQuery.
+
+- When transferring data from an on-premises location, use gsutil.
+- When transferring data from another cloud storage provider, use Storage Transfer Service.
+- Transfer Appliance when the data is too big to transfer electronically.
+- Otherwise, evaluate both tools with respect to your specific scenario.
+
+3v's
+Volume -> How much?
+Velocity -> How often?
+Variety -> How consistent?
+
+Pub/Sub
+- How long Cloud Pub/Sub holds messages. Its up to 7 days
+
+Cloud SQL
+Cloud Big Table (NoSQL, much faster than BigQuery)
+Cloud Spanner (global consistent transactions and size, can work with much larger databases than Cloud SQL, multiples databases)
+Cloud Datastore (NoSQL solution that used to be private to App Engine)
+
+Cloud Composer (Apache Airflow)
+
+############################################
+############################################
+############################################
+
+ML
+
+- You need to know when a pre-trained model won't handle the job and creating a model is required.
+- Which step or steps is the question asking about?
+- Directed Graphs are mentioned in multiple technologies in Google Cloud.
+- Is the question about STRUCTURED OR UNSTRUCTURED, or mixed data?
+- Is the problem suited for BIG DATA, MACHINE LEARNING, or human decision-making?
+- Is the question about TRAINING or INFERENCE?
+- Technically, ML is not predicting but is instead using inference.
+- Regression or Classification are supervised ML
+- Existing warehouse may contain structured data (and maybe labeled data) that you can use to train your ML model.
+- Mean Square Error (MSE).
+- Classification or categorizing produces discrete values and regression produces continuous values.
+
+PERFORMANCE & OPTIMIZATION
+- Usa a confusion matrix to describe the performance of classification models.
+- What are the business priorities? (Good, Fast & Inexpensive)
+- Consider using data in pace instead of ETL.
+- Grouping the work can be efficient and give additional control over the processing of the data.
+- Identify toy solutions and distinguish them from real production solutions.
+
+- Performance is critical to practical solutions.
+- Query only the columns that you need.
+- Performance and cost are related.
+- Price your query before running them.
+
+RELIABILITY, POLICY AND SECURITY
+- You can monitor infrastructure and data services with Stackdriver.
+- In TensorFlow data is often divided into training and evaluation sets, defining a path for measuring effectiveness and for improvement.
+
+PREPARING FOR ACCOUNTABILITY
+- Troubleshooting and improving data quality, and processing performance is distributed through all the technologies.
+- Not currently covered in Google Cloud training.
+
+- You can declare regional endpoints in Cloud Dataflow for security and network performance.
+- Can you apply the "principle of least privilege" in case examples?
+- Infrastructure services can add protection to the data solution.
+
+
+
